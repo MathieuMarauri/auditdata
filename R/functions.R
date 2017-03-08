@@ -106,6 +106,7 @@ addTable <- function(table, sheet, start.row, start.column, col.names, colnames.
 #'   returned,
 #' @param na.threshold numeric value indicating
 #'
+#'@export
 qualityCheck <- function (data, export = TRUE, file = NULL, numeric.cutoff = -1, max_unique_out = 100, return = FALSE, na.threshold = c(40, 80),
                           id.cols = NULL, date.cols = NULL){
   options(scipen = 999) # print numeric values in fixed notation unless they have more than 999 digits
@@ -166,7 +167,7 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric.cutoff = -1,
 
   # numeric output
   if(length(numeric_var) > 0){
-    output_num <- colQuantiles(as.matrix(data[, .SD, .SDcols = numeric_var]), probs = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), na.rm = TRUE)
+    output_num <- matrixStats::colQuantiles(as.matrix(data[, .SD, .SDcols = numeric_var]), probs = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), na.rm = TRUE)
     output_num <- cbind.data.frame(names(numeric_var), output_num)
     colnames(output_num) <- c("Variable", "Min", paste0("Q", 1:9), "Max")
   }
