@@ -24,6 +24,8 @@ An excel report is rendered using the [__xlsx__](https://cran.r-project.org/web/
 
 ### Usage
 
-This package is typically used before an analysis. After a table has been received it is always necessary to perform a quality check on the data, namely to know the number of missing values by columns, the levels of categorical columns ...
+This package is typically used before an analysis. After a table has been loaded into R, it may be necessary to perform a quality check on the data, namely to know the number of missing values by columns, the levels of categorical columns and their frequency ...
 
 The function _qualityCheck_ computes some indicators of the global quality of a dataset and produces an excel report with all the information. 
+
+
