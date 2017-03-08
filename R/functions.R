@@ -122,7 +122,7 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric.cutoff = -1,
   if(!(is.numeric(numeric.cutoff) & length(numeric.cutoff) == 1)) stop("'numeric.cutoff' must be numeric of length one.")
   if(!(is.numeric(max_unique_out) & length(max_unique_out) == 1)) stop("'max_unique_out' must be numeric of length one.")
   if(!is.null(na.threshold)) if(!(is.numeric(na.threshold) & length(na.threshold) == 2)) stop("'na.threshold' must be numeric of length 2.")
-  if(!(is.character(id.cols) & all(id.cols %in% colnames(data)))) stop("'id.cols' must contain valid column names.")
+  if(!is.null(id.cols)) if(!(is.character(id.cols) & all(id.cols %in% colnames(data)))) stop("'id.cols' must contain valid column names.")
   if(!is.null(date.cols)) if(!(names(date.cols) %in% colnames(data) & is.character(date.cols))) stop("'date.cols' must be a named character with valid columns names.")
 
   n_cols <- ncol(data)
