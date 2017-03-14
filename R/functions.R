@@ -85,9 +85,9 @@ addTable <- function(table, sheet, start.row, start.column, col.names, colnames.
 #' along with the minimum and maximum.
 #'
 #' The types are defined based on the types in the input table and on the value
-#' of other arguments. 'numeric.cutoff' allows numeric variables to be
+#' of other arguments. 'numeric_cutoff' allows numeric variables to be
 #' classified as categorical if they have less unique values than the value of
-#' 'numeric.cutoff'. Date variables has to be given by the user in the
+#' 'numeric_cutoff'. Date variables has to be given by the user in the
 #' 'date.cols' argument.
 #'
 #' @section warning: For now the function does not know how to deal with Date or
@@ -97,17 +97,17 @@ addTable <- function(table, sheet, start.row, start.column, col.names, colnames.
 #' @param data the table to analyse,
 #' @param export logical, should a report be created,
 #' @param file the name of the file if export is TRUE,
-#' @param numeric.cutoff numeric value indicating the maximum number of unique
+#' @param numeric_cutoff numeric value indicating the maximum number of unique
 #'   values for a numerical variable to be classified as categorical. Default to
 #'   -1 meaning that no numerical variables will be treated as categorical,
 #' @param max_unique_out numeric value indicating the maximum number in the
 #'   output for categorical variables,
 #' @param return logical, should a list with the results of the quality check be
 #'   returned,
-#' @param na.threshold numeric value indicating
+#' @param na_threshold numeric value indicating the range of values for good, medium and bad percentage of missing values
 #'
 #'@export
-qualityCheck <- function (data, export = TRUE, file = NULL, numeric.cutoff = -1, max_unique_out = 100, return = FALSE, na.threshold = c(40, 80),
+qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1, max_unique_out = 100, return = FALSE, na_threshold = c(40, 80),
                           id.cols = NULL, date.cols = NULL){
   options(scipen = 999) # print numeric values in fixed notation unless they have more than 999 digits
   # Arguments check
@@ -119,9 +119,9 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric.cutoff = -1,
     if(!(is.character(file) & length(file) == 1)) stop("'file' must be character of length one.")
     if(!endsWith(file, ".xlsx")) stop("'file' must end with '.xlsx'")
   }
-  if(!(is.numeric(numeric.cutoff) & length(numeric.cutoff) == 1)) stop("'numeric.cutoff' must be numeric of length one.")
+  if(!(is.numeric(numeric_cutoff) & length(numeric_cutoff) == 1)) stop("'numeric_cutoff' must be numeric of length one.")
   if(!(is.numeric(max_unique_out) & length(max_unique_out) == 1)) stop("'max_unique_out' must be numeric of length one.")
-  if(!is.null(na.threshold)) if(!(is.numeric(na.threshold) & length(na.threshold) == 2)) stop("'na.threshold' must be numeric of length 2.")
+  if(!is.null(na_threshold)) if(!(is.numeric(na_threshold) & length(na_threshold) == 2)) stop("'na_threshold' must be numeric of length 2.")
   if(!is.null(id.cols)) if(!(is.character(id.cols) & all(id.cols %in% colnames(data)))) stop("'id.cols' must contain valid column names.")
   if(!is.null(date.cols)) if(!(names(date.cols) %in% colnames(data) & is.character(date.cols))) stop("'date.cols' must be a named character with valid columns names.")
 
@@ -129,8 +129,8 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric.cutoff = -1,
   n_rows <- nrow(data)
   n_double <- nrow(unique(data))
   # columns types
-  categorical_var <- which(sapply(colnames(data), function(name) is.factor(data[[name]]) || is.character(data[[name]]) || uniqueN(data[[name]]) <= numeric.cutoff) == TRUE)
-  numeric_var <- which(sapply(colnames(data), function(name) is.numeric(data[[name]]) & uniqueN(data[[name]]) > numeric.cutoff) == TRUE)
+  categorical_var <- which(sapply(colnames(data), function(name) is.factor(data[[name]]) || is.character(data[[name]]) || uniqueN(data[[name]]) <= numeric_cutoff) == TRUE)
+  numeric_var <- which(sapply(colnames(data), function(name) is.numeric(data[[name]]) & uniqueN(data[[name]]) > numeric_cutoff) == TRUE)
   if(!is.null(date.cols)){
     date_var <- names(date.cols)
     categorical_var <- categorical_var[!names(categorical_var) %in% date_var]
@@ -252,11 +252,11 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric.cutoff = -1,
                    colIndex = 3,
                    colWidth = ifelse(test = transform_ok, yes = nchar("character") + 3, no = nchar("date (warning*)") + 3))
     # fill cell depending on percentage value
-    if(!is.null(na.threshold)){
+    if(!is.null(na_threshold)){
       for(i in 1:nrow(output_global)){
-        if(output_global[i, 4] > na.threshold[2]){
+        if(output_global[i, 4] > na_threshold[2]){
           CB.setFont(cb, font = Font(wb = workbook, color = "red", isBold = TRUE), rowIndex = i + 1, colIndex = 4)
-        } else if(output_global[i, 4] > na.threshold[1]){
+        } else if(output_global[i, 4] > na_threshold[1]){
           CB.setFont(cb, font = Font(wb = workbook, color = "orange", isBold = TRUE), rowIndex = i + 1, colIndex = 4)
         } else{
           CB.setFont(cb, font = Font(wb = workbook, color = "forestgreen", isBold = TRUE), rowIndex = i + 1, colIndex = 4)

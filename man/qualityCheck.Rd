@@ -4,8 +4,8 @@
 \alias{qualityCheck}
 \title{Performs an audit of a table.}
 \usage{
-qualityCheck(data, export = TRUE, file = NULL, numeric.cutoff = -1,
-  max_unique_out = 100, return = FALSE, na.threshold = c(40, 80),
+qualityCheck(data, export = TRUE, file = NULL, numeric_cutoff = -1,
+  max_unique_out = 100, return = FALSE, na_threshold = c(40, 80),
   id.cols = NULL, date.cols = NULL)
 }
 \arguments{
@@ -15,7 +15,7 @@ qualityCheck(data, export = TRUE, file = NULL, numeric.cutoff = -1,
 
 \item{file}{the name of the file if export is TRUE,}
 
-\item{numeric.cutoff}{numeric value indicating the maximum number of unique
+\item{numeric_cutoff}{numeric value indicating the maximum number of unique
 values for a numerical variable to be classified as categorical. Default to
 -1 meaning that no numerical variables will be treated as categorical,}
 
@@ -25,7 +25,7 @@ output for categorical variables,}
 \item{return}{logical, should a list with the results of the quality check be
 returned,}
 
-\item{na.threshold}{numeric value indicating}
+\item{na_threshold}{numeric value indicating the range of values for good, medium and bad percentage of missing values}
 }
 \description{
 This function performs a quality check on a table and creates an excel report
@@ -43,9 +43,9 @@ and finally a 'date' sheet with also a frequency table for each date variable
 along with the minimum and maximum.
 
 The types are defined based on the types in the input table and on the value
-of other arguments. 'numeric.cutoff' allows numeric variables to be
+of other arguments. 'numeric_cutoff' allows numeric variables to be
 classified as categorical if they have less unique values than the value of
-'numeric.cutoff'. Date variables has to be given by the user in the
+'numeric_cutoff'. Date variables has to be given by the user in the
 'date.cols' argument.
 }
 \section{warning}{
