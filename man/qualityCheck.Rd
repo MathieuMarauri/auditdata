@@ -6,7 +6,7 @@
 \usage{
 qualityCheck(data, export = TRUE, file = NULL, numeric_cutoff = -1,
   max_unique_out = 100, return = FALSE, na_threshold = c(40, 80),
-  id_cols = NULL, date_cols = NULL)
+  id_cols = NULL, date_cols = NULL, na_type = c("", " "))
 }
 \arguments{
 \item{data}{the table to analyse,}
@@ -26,6 +26,8 @@ output for categorical variables,}
 returned,}
 
 \item{na_threshold}{numeric value indicating the range of values for good, medium and bad percentage of missing values}
+
+\item{na_type}{charcater vector with valus that should be considered NA. If NULL then no values are treated as NA.}
 }
 \description{
 This function performs a quality check on a table and creates an excel report

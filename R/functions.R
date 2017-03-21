@@ -105,10 +105,11 @@ addTable <- function(table, sheet, start_row, start_column, col_names, colnames_
 #' @param return logical, should a list with the results of the quality check be
 #'   returned,
 #' @param na_threshold numeric value indicating the range of values for good, medium and bad percentage of missing values
+#' @param na_type charcater vector with valus that should be considered NA. If NULL then no values are treated as NA.
 #'
 #'@export
 qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1, max_unique_out = 100, return = FALSE, na_threshold = c(40, 80),
-                          id_cols = NULL, date_cols = NULL){
+                          id_cols = NULL, date_cols = NULL, na_type = c("", " ")){
   options(scipen = 999) # print numeric values in fixed notation unless they have more than 999 digits
   # Arguments check
   if(!is.data.table(data)) data <- as.data.table(data)
@@ -124,6 +125,13 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
   if(!is.null(na_threshold)) if(!(is.numeric(na_threshold) & length(na_threshold) == 2)) stop("'na_threshold' must be numeric of length 2.")
   if(!is.null(id_cols)) if(!(is.character(id_cols) & all(id_cols %in% colnames(data)))) stop("'id_cols' must contain valid column names.")
   if(!is.null(date_cols)) if(!(all(names(date_cols) %in% colnames(data)) & is.character(date_cols))) stop("'date_cols' must be a named character with valid columns names.")
+  if(!is.null(na_type)) if(!is.character(na_type)) stop("'na_type' must be a character vector.")
+
+  if(!is.null(na_type)){
+    for(j in seq_along(data)){
+      set(data, i = which(data[[j]] %in% na_type), j = j, value = NA)
+    }
+  }
 
   n_cols <- ncol(data)
   n_rows <- nrow(data)
