@@ -6,7 +6,7 @@
 \usage{
 qualityCheck(data, export = TRUE, file = NULL, numeric_cutoff = -1,
   max_unique_out = 100, return = FALSE, na_threshold = c(40, 80),
-  id.cols = NULL, date.cols = NULL)
+  id_cols = NULL, date_cols = NULL)
 }
 \arguments{
 \item{data}{the table to analyse,}
@@ -46,11 +46,11 @@ The types are defined based on the types in the input table and on the value
 of other arguments. 'numeric_cutoff' allows numeric variables to be
 classified as categorical if they have less unique values than the value of
 'numeric_cutoff'. Date variables has to be given by the user in the
-'date.cols' argument.
+'date_cols' argument.
 }
 \section{warning}{
  For now the function does not know how to deal with Date or
   POSIXlt/POSIXct format, please coerce to character before and use
-  'date.cols' to specify the date format.
+  'date_cols' to specify the date format.
 }
 

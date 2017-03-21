@@ -4,16 +4,16 @@
 \alias{addCustomCell}
 \title{Helper function to add titles.}
 \usage{
-addCustomCell(sheet, rowIndex, colIndex, title, titleStyle)
+addCustomCell(sheet, row_index, col_index, title, title_style)
 }
 \arguments{
 \item{sheet}{sheet object to contain the title,}
 
-\item{rowIndex}{numeric value indicating the row to contain the title,}
+\item{row_index}{numeric value indicating the row to contain the title,}
 
 \item{title}{the text to use as title,}
 
-\item{titleStyle}{style object to use for title}
+\item{title_style}{style object to use for title}
 }
 \description{
 Helper function to add titles.

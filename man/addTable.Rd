@@ -4,23 +4,23 @@
 \alias{addTable}
 \title{This functions add a data frame to a sheet and styles it.}
 \usage{
-addTable(table, sheet, start.row, start.column, col.names, colnames.style,
-  col.style, n.columns)
+addTable(table, sheet, start_row, start_column, col_names, colnames_style,
+  col_style, n_columns)
 }
 \arguments{
 \item{table}{the table to be added,}
 
 \item{sheet}{the sheet where tha table will be added,}
 
-\item{start.row}{a numeric value for the starting row,}
+\item{start_row}{a numeric value for the starting row,}
 
-\item{start.column}{a numeric value for the starting column,}
+\item{start_column}{a numeric value for the starting column,}
 
-\item{col.names}{logical, should the colnames be written,}
+\item{col_names}{logical, should the colnames be written,}
 
-\item{colnames.style}{the style associated to the colnames,}
+\item{colnames_style}{the style associated to the colnames,}
 
-\item{col.style}{a list of CellStyle. If the name of the list element is the
+\item{col_style}{a list of CellStyle. If the name of the list element is the
 column number, it will be used to set the style of the column. Columns of
 type Date and POSIXct are styled automatically even if colSyle=NULL.}
 }
