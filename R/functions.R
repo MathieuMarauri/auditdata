@@ -191,34 +191,34 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
     # initialisation of the excel report
     workbook <- createWorkbook(type = "xlsx")
     # creation of some cell styles
-    title_style <- CellStyle(workbook) +
-      Font(workbook,  heightInPoints = 16, isBold = TRUE, underline = 0)
-    subtitle_style <- CellStyle(workbook) +
+    title_style <- CellStyle(wb = workbook) +
+      Font(wb = workbook,  heightInPoints = 16, isBold = TRUE, underline = 0)
+    subtitle_style <- CellStyle(wb = workbook) +
       Font(workbook,  heightInPoints = 14, isItalic = FALSE, isBold = FALSE)
-    table_rownames_style <- CellStyle(workbook) +
-      Font(workbook, isBold = TRUE) +
+    table_rownames_style <- CellStyle(wb = workbook) +
+      Font(wb = workbook, isBold = TRUE) +
       Alignment(wrapText = TRUE, horizontal = "ALIGN_LEFT") +
       Border(color = "black", position = c("LEFT", "RIGHT"), pen = "BORDER_THIN")
-    table_colnames_style <- CellStyle(workbook) +
-      Font(workbook, isBold = TRUE) +
+    table_colnames_style <- CellStyle(wb = workbook) +
+      Font(wb = workbook, isBold = TRUE) +
       Alignment(wrapText = TRUE, horizontal = "ALIGN_CENTER") +
       Border(color = "black", position = c("TOP", "BOTTOM"), pen = "BORDER_THIN")
-    first_col_style <- CellStyle(workbook) +
-      Font(workbook, isBold = TRUE) +
+    first_col_style <- CellStyle(wb = workbook) +
+      Font(wb = workbook, isBold = TRUE) +
       Border(color = "black", position = c("RIGHT", "LEFT"), pen = "BORDER_THIN")
-    other_col_style <- CellStyle(workbook) +
+    other_col_style <- CellStyle(wb = workbook) +
       Alignment(wrapText = TRUE, horizontal = "ALIGN_CENTER")
-    date_col_style <- CellStyle(workbook) +
+    date_col_style <- CellStyle(wb = workbook) +
       Alignment(wrapText = TRUE, horizontal = "ALIGN_CENTER") +
-      Font(workbook, isBold = TRUE) +
+      Font(wb = workbook, isBold = TRUE) +
       DataFormat(x = "dd-mm-yyyy") +
       Border(color = "black", position = c("RIGHT", "LEFT"), pen = "BORDER_THIN")
-    table_title_style <- CellStyle(workbook) +
-      Font(workbook, isBold = TRUE) +
+    table_title_style <- CellStyle(wb = workbook) +
+      Font(wb = workbook, isBold = TRUE) +
       Alignment(wrapText = TRUE, horizontal = "ALIGN_CENTER") +
       Border(color = "black", position = c("TOP", "BOTTOM", "RIGHT", "LEFT"), pen = "BORDER_THIN")
     # creation of the different sheets
-    summary_sheet <- createSheet(workbook, sheetName = "Summary")
+    summary_sheet <- createSheet(wb = workbook, sheetName = "Summary")
     # title
     addCustomCell(summary_sheet,
                   row_index = 1,
@@ -246,24 +246,24 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
     cb <- CellBlock(sheet = summary_sheet, startRow = 4, startColumn = 2, noRows = n_cols + 1, noColumns = 4, create = FALSE)
     for(i in 4:6){
       setColumnWidth(sheet = summary_sheet,
-                     col_index = i,
+                     colIndex = i,
                      colWidth = nchar(colnames(output_global)[i-1]) + 3)
     }
     setColumnWidth(sheet = summary_sheet,
-                   col_index = 2,
+                   colIndex = 2,
                    colWidth = max(nchar(colnames(data))) + 3)
     setColumnWidth(sheet = summary_sheet,
-                   col_index = 3,
+                   colIndex = 3,
                    colWidth = ifelse(test = transform_ok, yes = nchar("character") + 3, no = nchar("date (warning*)") + 3))
     # fill cell depending on percentage value
     if(!is.null(na_threshold)){
       for(i in 1:nrow(output_global)){
         if(output_global[i, 4] > na_threshold[2]){
-          CB.setFont(cb, font = Font(wb = workbook, color = "red", isBold = TRUE), row_index = i + 1, col_index = 4)
+          CB.setFont(cellBlock = cb, font = Font(wb = workbook, color = "red", isBold = TRUE), rowIndex = i + 1, colIndex = 4)
         } else if(output_global[i, 4] > na_threshold[1]){
-          CB.setFont(cb, font = Font(wb = workbook, color = "orange", isBold = TRUE), row_index = i + 1, col_index = 4)
+          CB.setFont(cellBlock = cb, font = Font(wb = workbook, color = "orange", isBold = TRUE), rowIndex = i + 1, colIndex = 4)
         } else{
-          CB.setFont(cb, font = Font(wb = workbook, color = "forestgreen", isBold = TRUE), row_index = i + 1, col_index = 4)
+          CB.setFont(cellBlock = cb, font = Font(wb = workbook, color = "forestgreen", isBold = TRUE), rowIndex = i + 1, colIndex = 4)
         }
       }
     }
@@ -298,17 +298,17 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
                    colStyle = col_style)
       # add borders
       cb <- CellBlock(sheet = numeric_sheet, startRow = 3, startColumn = 2, noRows = length(numeric_var) + 1, noColumns = 12, create = FALSE)
-      CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "BOTTOM", pen = "BORDER_THIN"), row_index = length(numeric_var) + 1, col_index = 1:12)
-      CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "RIGHT", pen = "BORDER_THIN"), row_index = 1:(length(numeric_var) + 1), col_index = 12)
-      CB.setBorder(cellBlock = cb, border = Border(color = "black", position = c("RIGHT", "LEFT"), pen = "BORDER_THIN"), row_index = 1, col_index = 1)
+      CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "BOTTOM", pen = "BORDER_THIN"), rowIndex = length(numeric_var) + 1, colIndex = 1:12)
+      CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "RIGHT", pen = "BORDER_THIN"), rowIndex = 1:(length(numeric_var) + 1), colIndex = 12)
+      CB.setBorder(cellBlock = cb, border = Border(color = "black", position = c("RIGHT", "LEFT"), pen = "BORDER_THIN"), rowIndex = 1, colIndex = 1)
       # columns width
       setColumnWidth(sheet = numeric_sheet,
-                     col_index = 2,
+                     colIndex = 2,
                      colWidth = max(nchar(colnames(data))) + 3)
     }
     # character sheet
     if(length(categorical_var) > 0){
-      character_sheet <- createSheet(workbook, sheetName = "Character")
+      character_sheet <- createSheet(wb = workbook, sheetName = "Character")
       # title
       addCustomCell(character_sheet,
                     row_index = 1,
@@ -336,7 +336,7 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
       # Change column width
       for(i in seq(from = 1, to = length(liste_names), by = 4)){
         setColumnWidth(sheet = character_sheet,
-                       col_index = i + 1,
+                       colIndex = i + 1,
                        colWidth = nchar(liste_names[i]) + 3)
       }
       col_style <- append(list(`1` = first_col_style), rep(list(other_col_style), times = 2))
@@ -354,7 +354,7 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
     }
     # date sheet
     if(length(date_var) > 0){
-      date_sheet <- createSheet(workbook, sheetName = "Date")
+      date_sheet <- createSheet(wb = workbook, sheetName = "Date")
       # title
       addCustomCell(date_sheet,
                     row_index = 1,
@@ -382,7 +382,7 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
       # Change column width
       for(i in seq(from = 1, to = length(liste_names), by = 7)){
         setColumnWidth(sheet = date_sheet,
-                       col_index = i + 1,
+                       colIndex = i + 1,
                        colWidth = nchar(liste_names[i]) + 3)
       }
       # add frequences
@@ -410,7 +410,7 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
       }
       for(i in seq(from = 1, to = length(liste_names), by = 7)){
         setColumnWidth(sheet = date_sheet,
-                       col_index = i + 6,
+                       colIndex = i + 6,
                        colWidth = nchar("00-00-0000") + 3)
       }
     }
