@@ -276,7 +276,7 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
       }
     }
     # warning
-    if(!(is.null(date_cols) & transform_ok)){
+    if("date (warning*)" %in% output_global$Type){
       addCustomCell(summary_sheet,
                     row_index = 4 + n_cols + 1 + 1,
                     col_index = 2,
