@@ -1,6 +1,6 @@
 Package: auditdata
 Title: Performs an Quality Audit of a Table
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: person("Mathieu", "Marauri", email = "m.marauri@hotmail.fr", role = c("aut", "cre"))
 Description: The main function of this package, 'qualityCheck', computes the number of missing values by variables and depending on the type of the variable some other key indicators.
   Quantiles are computed for numeric variables and for categorical variables a frequency table of the unique values is returned. Date variables are also managable. 
