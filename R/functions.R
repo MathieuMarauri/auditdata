@@ -7,10 +7,10 @@
 #' @param title_style style object to use for title
 #'
 addCustomCell <- function(sheet, row_index, col_index, title, title_style){
-  rows <- createRow(sheet, row_index = row_index)
-  sheetTitle <- createCell(rows, col_index = col_index)
-  setCellValue(sheetTitle[[1, 1]], title)
-  setCellStyle(sheetTitle[[1, 1]], title_style)
+  rows <- createRow(sheet = sheet, rowIndex = row_index)
+  sheetTitle <- createCell(row = rows, colIndex = col_index)
+  setCellValue(cell = sheetTitle[[1, 1]], value = title)
+  setCellStyle(cell = sheetTitle[[1, 1]], cellStyle = title_style)
 }
 
 #'
@@ -52,7 +52,7 @@ createNewCol <- function(data, name, max_unique_out){
 addTable <- function(table, sheet, start_row, start_column, col_names, colnames_style, col_style, n_columns){
   addDataFrame(x = table,
                sheet = sheet,
-               col_names = col_names,
+               col.names = col_names,
                row.names = FALSE,
                startRow = start_row ,
                startColumn = start_column,
@@ -62,10 +62,10 @@ addTable <- function(table, sheet, start_row, start_column, col_names, colnames_
                characterNA = "NA")
   cb <- CellBlock(sheet = sheet, startRow = start_row, startColumn = start_column, noRows = nrow(table) + col_names, noColumns = n_columns, create = FALSE)
   # add borders
-  CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "BOTTOM", pen = "BORDER_THIN"), row_index = nrow(table) + col_names, col_index = 1:n_columns)
-  CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "RIGHT", pen = "BORDER_THIN"), row_index = 1:(nrow(table) + col_names), col_index = n_columns)
-  CB.setBorder(cellBlock = cb, border = Border(color = "black", position = c("RIGHT", "LEFT"), pen = "BORDER_THIN"), row_index = 1, col_index = 1)
-  if(!col_names) CB.setBorder(cellBlock = cb, border = Border(color = "black", position = c("TOP"), pen = "BORDER_THIN"), row_index = 1, col_index = 1:n_columns)
+  CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "BOTTOM", pen = "BORDER_THIN"), rowIndex = nrow(table) + col_names, colIndex = 1:n_columns)
+  CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "RIGHT", pen = "BORDER_THIN"), rowIndex = 1:(nrow(table) + col_names), colIndex = n_columns)
+  CB.setBorder(cellBlock = cb, border = Border(color = "black", position = c("RIGHT", "LEFT"), pen = "BORDER_THIN"), rowIndex = 1, colIndex = 1)
+  if(!col_names) CB.setBorder(cellBlock = cb, border = Border(color = "black", position = c("TOP"), pen = "BORDER_THIN"), rowIndex = 1, colIndex = 1:n_columns)
 }
 
 #'
