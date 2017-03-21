@@ -324,11 +324,13 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
                     title = "Frequences of modalities for the categorical variables",
                     title_style = title_style)
       # subtitle
-      addCustomCell(character_sheet,
-                    row_index = 2,
-                    col_index = 1,
-                    title = paste0("The maximum number of modalities is limited to ", max_unique_out, ". Change the parameter 'max_unique_out' to modify this behaviour."),
-                    title_style = subtitle_style)
+      if(max(unlist(lapply(length(categorical_var), function(index) nrow(output_character[[index]])))) == 100){
+        addCustomCell(character_sheet,
+                      row_index = 2,
+                      col_index = 1,
+                      title = paste0("The maximum number of modalities is limited to ", max_unique_out, ". Change the parameter 'max_unique_out' to modify this behaviour."),
+                      title_style = subtitle_style)
+      }
       # character output
       liste_names <- unlist(lapply(names(categorical_var), function(name) return(c(name, rep(NA, 3)))))
       col_style <- rep(list(table_title_style), times = length(categorical_var))
