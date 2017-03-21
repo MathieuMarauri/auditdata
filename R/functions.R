@@ -166,9 +166,13 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
   numeric_var <- numeric_var[!names(numeric_var) %in% id.cols]
 
   # numeric output
-  if(length(numeric_var) > 0){
+  if(length(numeric_var) > 1){
     output_num <- matrixStats::colQuantiles(as.matrix(data[, .SD, .SDcols = numeric_var]), probs = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), na.rm = TRUE)
     output_num <- cbind.data.frame(names(numeric_var), output_num)
+    colnames(output_num) <- c("Variable", "Min", paste0("Q", 1:9), "Max")
+  } else if(length(numeric_var) == 1){
+    output_num <- matrixStats::colQuantiles(as.matrix(data[, .SD, .SDcols = numeric_var]), probs = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), na.rm = TRUE)
+    output_num <- cbind.data.frame(names(numeric_var), t(output_num))
     colnames(output_num) <- c("Variable", "Min", paste0("Q", 1:9), "Max")
   }
 
