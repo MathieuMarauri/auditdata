@@ -105,7 +105,7 @@ addTable <- function(table, sheet, start_row, start_column, col_names, colnames_
 #' @param return logical, should a list with the results of the quality check be
 #'   returned,
 #' @param na_threshold numeric value indicating the range of values for good, medium and bad percentage of missing values
-#' @param na_type charcater vector with valus that should be considered NA. If NULL then no values are treated as NA.
+#' @param na_type charcater vector with valus that should be considered NA. Default to NULL, no values other than regular NA are treated as NA.
 #'
 #'@export
 qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1, max_unique_out = 100, return = FALSE, na_threshold = c(40, 80),
@@ -324,7 +324,7 @@ qualityCheck <- function (data, export = TRUE, file = NULL, numeric_cutoff = -1,
                     title = "Frequences of modalities for the categorical variables",
                     title_style = title_style)
       # subtitle
-      if(max(unlist(lapply(length(categorical_var), function(index) nrow(output_character[[index]])))) == 100){
+      if(max(unlist(lapply(length(categorical_var), function(index) nrow(output_character[[index]])))) == max_unique_out){
         addCustomCell(character_sheet,
                       row_index = 2,
                       col_index = 1,

@@ -27,7 +27,7 @@ returned,}
 
 \item{na_threshold}{numeric value indicating the range of values for good, medium and bad percentage of missing values}
 
-\item{na_type}{charcater vector with valus that should be considered NA. If NULL then no values are treated as NA.}
+\item{na_type}{charcater vector with valus that should be considered NA. Default to NULL, no values other than regular NA are treated as NA.}
 }
 \description{
 This function performs a quality check on a table and creates an excel report
