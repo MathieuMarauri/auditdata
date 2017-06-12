@@ -4,16 +4,14 @@
 \alias{qualityCheck}
 \title{Performs an audit of a table.}
 \usage{
-qualityCheck(data, export = TRUE, file = NULL, numeric_cutoff = -1,
-  max_unique_out = 100, return = FALSE, na_threshold = c(40, 80),
-  id_cols = NULL, date_cols = NULL, na_type = c("", " "))
+qualityCheck(data, file = NULL, numeric_cutoff = -1, max_unique_out = 100,
+  na_type = c("", " "), na_threshold = c(40, 80))
 }
 \arguments{
 \item{data}{the table to analyse,}
 
-\item{export}{logical, should a report be created,}
-
-\item{file}{the name of the file if export is TRUE,}
+\item{file}{character, the name of the file where the report will be saved.
+Default to paste0(deparse(substitute(data)), "_quality_results.xlsx"),}
 
 \item{numeric_cutoff}{numeric value indicating the maximum number of unique
 values for a numerical variable to be classified as categorical. Default to
@@ -22,12 +20,12 @@ values for a numerical variable to be classified as categorical. Default to
 \item{max_unique_out}{numeric value indicating the maximum number in the
 output for categorical variables,}
 
-\item{return}{logical, should a list with the results of the quality check be
-returned,}
+\item{na_type}{charcater vector with valus that should be considered NA.
+Default to NULL, no values other than regular NA are treated as NA.}
 
-\item{na_threshold}{numeric value indicating the range of values for good, medium and bad percentage of missing values}
-
-\item{na_type}{charcater vector with valus that should be considered NA. Default to NULL, no values other than regular NA are treated as NA.}
+\item{na_threshold}{numeric vector defining the range of colors in the output
+for the percentage of missing values. Default to green before 40 percent,
+orange between 40 and 80 and red over 80 percent.}
 }
 \description{
 This function performs a quality check on a table and creates an excel report
