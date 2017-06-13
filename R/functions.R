@@ -150,31 +150,12 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, max_unique_out
   categorical_var <- which(sapply(colnames(data), function(name) is.factor(data[[name]]) || is.character(data[[name]]) || uniqueN(data[[name]]) <= numeric_cutoff) == TRUE)
   numeric_var <- which(sapply(colnames(data), function(name) is.numeric(data[[name]]) & uniqueN(data[[name]]) > numeric_cutoff) == TRUE)
   date_var <- which(sapply(colnames(data), function(name) is.date(data[[name]])) == TRUE)
-  # if(!is.null(date_cols)){
-  #   date_var <- names(date_cols)
-  #   categorical_var <- categorical_var[!names(categorical_var) %in% date_var]
-  #   numeric_var <- numeric_var[!names(numeric_var) %in% date_var]
-  #   # to date type
-  #   na_before_transform <- colSums(is.na(data[, .SD, .SDcols = date_var]))
-  #   # for(j in date_var) set(data, j = j, value = as.Date(x = data[[j]], format = date_cols[j]))
-  #   for(i in 1:length(date_var)){
-  #     data[[date_var[i]]] <- as.Date(x = data[[date_var[i]]], format = date_cols[i])
-  #   }
-  #   na_after_transform <- colSums(is.na(data[, .SD, .SDcols = date_var]))
-  #   transform_ok <- all(na_before_transform == na_after_transform)
-  #   if(!transform_ok) date_warning <- date_var[which(na_before_transform != na_after_transform)]
-  # } else{
-  #   transform_ok <- TRUE
-  #   date_var <- NULL
-  #   date_warning <- NULL
-  # }
 
   # summary output
   types <- rep(x = "undefined", length = n_cols)
   types[categorical_var] <- "character"
   types[numeric_var] <- "numeric"
   types[date_var] <- "date"
-  # if(!transform_ok) types[which(colnames(data) %in% date_warning)] <- "date (warning*)"
   n_miss <- colSums(is.na(data))
   percent_miss <- 100 * n_miss / n_rows
   n_unique_values <- t(data[, lapply(.SD, uniqueN)])
@@ -194,7 +175,7 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, max_unique_out
 
   # categorical output
   if(length(categorical_var) > 0){
-    output_character <- lapply(names(categorical_var), function(name) freqTable(data = data, name = name, max_unique_out = max_unique_out))
+    output_character <- lapply(categorical_var, function(name) freqTable(data = data, name = name, max_unique_out = max_unique_out))
   }
 
   # date output
@@ -269,7 +250,6 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, max_unique_out
                  colWidth = max(nchar(colnames(data))) + 3)
   setColumnWidth(sheet = summary_sheet,
                  colIndex = 3,
-                 # colWidth = ifelse(test = transform_ok, yes = nchar("character") + 3, no = nchar("date (warning*)") + 3)
                  colWidth = nchar("character") + 3)
   # fill cell depending on percentage value
   if(!is.null(na_threshold)){
@@ -283,14 +263,6 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, max_unique_out
       }
     }
   }
-  # warning
-  # if("date (warning*)" %in% output_global$Type){
-  #   addCustomCell(summary_sheet,
-  #                 row_index = 4 + n_cols + 1 + 1,
-  #                 col_index = 2,
-  #                 title = "*warning: there was some problemn when coercing the date variables, please check that the specified format is correct.",
-  #                 title_style = subtitle_style)
-  # }
   # numeric sheet
   if(length(numeric_var) > 0){
     numeric_sheet <- createSheet(workbook, sheetName = "Numeric")
@@ -386,7 +358,7 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, max_unique_out
                   title = paste0("The maximum number of modalities is limited to ", max_unique_out, ". Change the parameter 'max_unique_out' to modify this behaviour."),
                   title_style = subtitle_style)
     # date output
-    liste_names <- unlist(lapply(date_var, function(name) return(c(name, rep(NA, 6)))))
+    liste_names <- unlist(lapply(names(date_var), function(name) return(c(name, rep(NA, 6)))))
     col_style <- rep(list(table_title_style), times = length(date_var))
     names(col_style) <- seq(from = 1, to = length(liste_names), by = 7)
     addDataFrame(x = t(liste_names),
