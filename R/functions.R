@@ -139,6 +139,10 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
     }
   }
 
+  step <- ifelse(test = report,
+                 yes = 5,
+                 no = 4)
+
   is.date <- function(x) inherits(x, 'Date') | inherits(x, 'POSIXct') | inherits(x, 'POSIXlt')
 
   n_cols <- ncol(data)
@@ -160,6 +164,8 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
   output_global <- cbind.data.frame(names(n_miss), types, n_miss, as.numeric(format(percent_miss, digits = 0)), n_unique_values)
   colnames(output_global) <- c("Variables", "Type", "Missing values", "Percentage of missing values", "Unique values")
 
+  cat(paste0("Step 1/", step, " completed \n"))
+
   # numeric output
   if(length(numeric_var) > 1){
     output_num <- matrixStats::colQuantiles(as.matrix(data[, .SD, .SDcols = numeric_var]), probs = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), na.rm = TRUE)
@@ -171,10 +177,14 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
     colnames(output_num) <- c("Variable", "Min", paste0("Q", 1:9), "Max")
   }
 
+  cat(paste0("Step 2/", step, " completed \n"))
+
   # categorical output
   if(length(categorical_var) > 0){
     output_character <- lapply(categorical_var, function(name) freqTable(data = data, name = name, length_out = length_out))
   }
+
+  cat(paste0("Step 3/", step, " completed \n"))
 
   # date output
   if(length(date_var) > 0){
@@ -182,13 +192,7 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
     output_date_range <- lapply(date_var, function(name) data.frame(c("min", "max"), c(min(data[[name]], na.rm = TRUE), max(data[[name]], na.rm = TRUE))))
   }
 
-  # R output
-  cat(paste0('Excel report saved in "', file.path(getwd(), file), '"'))
-  if(return){
-    cat("\n")
-    cat("\n")
-    return(output_global)
-  }
+  cat(paste0("Step 4/", step, " completed \n"))
 
   # Excel output
   if(report){
@@ -413,5 +417,16 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
       }
     }
     saveWorkbook(wb = workbook, file = file)
+
+    cat(paste0("Step 5/", step, " completed \n"))
+    cat(paste0('Excel report saved in "', file.path(getwd(), file), '"'))
+
   }
+
+
+  # R output
+  if(return){
+    return(output_global[, -1])
+  }
+
 }
