@@ -4,7 +4,7 @@
 \alias{freqTable}
 \title{Helper function for 'qualityCheck'}
 \usage{
-freqTable(data, name, max_unique_out = Inf)
+freqTable(data, name, length_out = Inf)
 }
 \arguments{
 \item{data}{the table containing the data,}
@@ -12,13 +12,13 @@ freqTable(data, name, max_unique_out = Inf)
 \item{name}{the name of the variable from wich the frequency table will be
 computed,}
 
-\item{max_unique_out}{the maximum number of rows in the output.}
+\item{length_out}{the maximum number of rows in the output.}
 }
 \value{
-a frequency table with the top 'max_unique_out' most frequent
+a frequency table with the top 'length_out' most frequent
   modalities and the associated percentage.
 }
 \description{
 This function creates a frequency table from the variable 'name' in the table
-'data'. This frequency table is ordered and limited to 'max_unique_out' rows.
+'data'. This frequency table is ordered and limited to 'length_out' rows.
 }

@@ -4,46 +4,51 @@
 \alias{qualityCheck}
 \title{Performs an audit of a table.}
 \usage{
-qualityCheck(data, file = NULL, numeric_cutoff = -1, max_unique_out = 100,
-  na_type = c("", " "), na_threshold = c(40, 80))
+qualityCheck(data, file = NULL, numeric_cutoff = -1, length_out = 100,
+  na_type = c("", " "), na_threshold = c(40, 80), return = TRUE,
+  report = TRUE)
 }
 \arguments{
 \item{data}{the table to analyse,}
 
-\item{file}{character, the name of the file where the report will be saved.
-Default to paste0(deparse(substitute(data)), "_quality_results.xlsx"),}
+\item{file}{character, the name of the file where the report will be saved. Default to
+paste0(deparse(substitute(data)), "_quality_results.xlsx"),}
 
-\item{numeric_cutoff}{numeric value indicating the maximum number of unique
-values for a numerical variable to be classified as categorical. Default to
--1 meaning that no numerical variables will be treated as categorical,}
+\item{numeric_cutoff}{numeric value indicating the maximum number of unique values for a numerical
+variable to be classified as categorical. Default to -1 meaning that no numerical variables will
+be treated as categorical,}
 
-\item{max_unique_out}{numeric value indicating the maximum number in the
-output for categorical variables,}
+\item{length_out}{numeric value indicating the maximum number in the output for categorical
+variables,}
 
-\item{na_type}{charcater vector with valus that should be considered NA.
-Default to NULL, no values other than regular NA are treated as NA.}
+\item{na_type}{charcater vector with valus that should be considered NA. Default to NULL, no
+values other than regular NA are treated as NA.}
 
-\item{na_threshold}{numeric vector defining the range of colors in the output
-for the percentage of missing values. Default to green before 40 percent,
-orange between 40 and 80 and red over 80 percent.}
+\item{na_threshold}{numeric vector defining the range of colors in the output for the percentage
+of missing values. Default to green before 40 percent, orange between 40 and 80 and red over 80
+percent.}
+
+\item{return}{logical. Should an object be returned by the function. Default to TRUE.}
+
+\item{report}{logical. Should an excel report be rendered. Default to TRUE.}
+}
+\value{
+If return is TRUE then a summary table with number of missing values, percentage of
+ missing values and number of unique values by variable is returned as a data.table.
 }
 \description{
-This function performs a quality check on a table and creates an excel report
-if asked. In the report one can find the number of missing values by variable
-alog with the quantiles for the numeric variables and a frequency table for
-each categorical variable. An excel report can be rendered with the different
-values computed.
+This function performs a quality check on a table and creates an excel report if asked. The number
+of missing values by variable along with the quantiles for the numeric variables and a frequency
+table for each categorical variable can be found in the report.
 }
 \details{
-The excel report is composed of several sheets. A 'summary' one with
-information regarding missing values for every variables, a 'numeric' sheet
-with the quantiles of all numeric varaibles, a 'categorical' sheet with a
-table with unique values and their frequency for each categorical variable
-and finally a 'date' sheet with also a frequency table for each date variable
-along with the minimum and maximum.
+The excel report is composed of several sheets. A 'summary' one with information regarding missing
+values for every variables, a 'numeric' sheet with the quantiles of all numeric varaibles, a
+'categorical' sheet with a table with unique values and their frequency for each categorical
+variable and finally a 'date' sheet with also a frequency table for each date variable along with
+the minimum and maximum.
 
-The types are defined based on the types in the input table and on the value
-of other arguments. 'numeric_cutoff' allows numeric variables to be
-classified as categorical if they have less unique values than the value of
-'numeric_cutoff'.
+The types are defined based on the types in the input table and on the value of other arguments.
+'numeric_cutoff' allows numeric variables to be classified as categorical if they have less unique
+values than the value of 'numeric_cutoff'.
 }
