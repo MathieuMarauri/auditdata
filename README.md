@@ -19,12 +19,13 @@ Should you have other issues regarding __rJava__ installation please refer to [t
 
 ### Description
 
-The main function of this package, _qualityCheck_, computes the number of missing values by variables and depending on the type of the variable some other key indicators.
+The main function of this package, _qualityCheck_, computes the number of missing values by variable and, depending on the type of the variable, other data quality key indicators.
 
-Quantiles are computed for numeric variables and for categorical variables a frequency table of the unique values is returned. Date variables are also managable. 
+Percenttiles are computed for numeric variables. For categorical variables a frequency table of the unique values is returned. 
 
-An excel report is rendered using the [__xlsx__](https://cran.r-project.org/web/packages/xlsx/xlsx.pdf "Title") package. The styles are defined within the function, if the user wants to modify the style he or she has to modify the core of the function. Go to [this site](http://www.sthda.com/english/wiki/r-xlsx-package-a-quick-start-guide-to-manipulate-excel-files-in-r "Title") for a detailed tutorial on how to style an excel file.
+An excel report is rendered using the [__xlsx__](https://cran.r-project.org/web/packages/xlsx/xlsx.pdf "Title") package. The styles are defined within the function, To modify the styles, edit the function and refer to [this site](http://www.sthda.com/english/wiki/r-xlsx-package-a-quick-start-guide-to-manipulate-excel-files-in-r "Title") for a detailed tutorial on how to style an excel file.
 
+Use `?qualityCheck` to see the documentation of the function.
 
 ### Usage
 
