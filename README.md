@@ -11,7 +11,9 @@ require(devtools)
 install_github('MathieuMarauri/auditdata)
 ```
 
-If you cannot install the package due to _rJava_ you should first check that you have a 64-bit Java version installed on your computer with the command line `java -d64 -version`. If you do not have Java installed with te proper architecture then go to [this site](https://www.java.com/en/download/manual.jsp "Title") to download the correct version of Java. Try again installing the _audidata_ package, you should have have to restart your computer. 
+If you cannot install the package due to __rJava__ you should first check that you have a 64-bit Java version installed on your computer with the command line `java -d64 -version` or the R command `system("java -version")`. If you do not have Java installed with te proper architecture then go to [this site](https://www.java.com/en/download/manual.jsp "Title") to download the correct version of Java. Try again installing the __audidata__ package, you should have have to restart your computer. 
+
+Should you have other issues regarding __rJava__ installation please refer to [this answer](https://stackoverflow.com/questions/7019912/using-the-rjava-package-on-win7-64-bit-with-r/7604469#7604469 "Title") on stackoverflow. 
 
 ---
 
