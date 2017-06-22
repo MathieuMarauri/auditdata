@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{addCustomTable}
 \alias{addCustomTable}
-\title{This functions add a data frame to a sheet and styles it.}
+\title{Helper function to add a data frame to a sheet and styles it.}
 \usage{
 addCustomTable(wb, sheet, table, start_row, start_column, date = FALSE)
 }

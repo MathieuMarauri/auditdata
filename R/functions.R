@@ -1,10 +1,13 @@
+
 #'
-#' Helper function to add titles.
+#' Helper function to add custom cell
 #'
-#' @param sheet sheet object to contain the title,
-#' @param row_index numeric value indicating the row to contain the title,
-#' @param title the text to use as title,
-#' @param title_style style object to use for title
+#' @param wb a workbook
+#' @param sheet a sheet in the workbook
+#' @param row_index row index of the cell
+#' @param col_index col index of the cell
+#' @param value value to be added to the cell
+#' @param cell_style style object to customize the cell
 #'
 addCustomCell <- function(wb, sheet, row_index, col_index, value, cell_style){
   writeData(wb = wb,
@@ -47,7 +50,7 @@ freqTable <- function(data, name, length_out = Inf){
 }
 
 #'
-#' This functions add a data frame to a sheet and styles it.
+#' Helper function to add a data frame to a sheet and styles it.
 #'
 #' It encapsulates writeData, addStyle and createStyle from the openxlsx package.
 #'

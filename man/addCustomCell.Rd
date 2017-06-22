@@ -2,19 +2,23 @@
 % Please edit documentation in R/functions.R
 \name{addCustomCell}
 \alias{addCustomCell}
-\title{Helper function to add titles.}
+\title{Helper function to add custom cell}
 \usage{
 addCustomCell(wb, sheet, row_index, col_index, value, cell_style)
 }
 \arguments{
-\item{sheet}{sheet object to contain the title,}
+\item{wb}{a workbook}
 
-\item{row_index}{numeric value indicating the row to contain the title,}
+\item{sheet}{a sheet in the workbook}
 
-\item{title}{the text to use as title,}
+\item{row_index}{row index of the cell}
 
-\item{title_style}{style object to use for title}
+\item{col_index}{col index of the cell}
+
+\item{value}{value to be added to the cell}
+
+\item{cell_style}{style object to customize the cell}
 }
 \description{
-Helper function to add titles.
+Helper function to add custom cell
 }
