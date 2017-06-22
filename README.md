@@ -11,9 +11,11 @@ require(devtools)
 install_github('MathieuMarauri/auditdata)
 ```
 
+<!--
 If you cannot install the package due to __rJava__ you should first check that you have a 64-bit Java version installed on your computer with the command line `java -d64 -version` or the R command `system("java -version")`. If you do not have Java installed with te proper architecture then go to [this site](https://www.java.com/en/download/manual.jsp "Title") to download the correct version of Java. Try again installing the __audidata__ package, you should have have to restart your computer. 
 
 Should you have other issues regarding __rJava__ installation please refer to [this answer](https://stackoverflow.com/questions/7019912/using-the-rjava-package-on-win7-64-bit-with-r/7604469#7604469 "Title") on stackoverflow. 
+-->
 
 ---
 
@@ -23,9 +25,11 @@ The main function of this package, _qualityCheck_, computes the number of missin
 
 Percenttiles are computed for numeric variables. For categorical variables a frequency table of the unique values is returned. 
 
-An excel report is rendered using the [__xlsx__](https://cran.r-project.org/web/packages/xlsx/xlsx.pdf "Title") package. The styles are defined within the function, To modify the styles, edit the function and refer to [this site](http://www.sthda.com/english/wiki/r-xlsx-package-a-quick-start-guide-to-manipulate-excel-files-in-r "Title") for a detailed tutorial on how to style an excel file.
+An excel report is rendered using the [__openxlsx__](https://cran.r-project.org/web/packages/openxlsx/openxlsx.pdf "Title") package. The styles are defined within the function, To modify the styles, edit the function and manually change it.
 
 Use `?qualityCheck` to see the documentation of the function.
+
+---
 
 ### Usage
 
@@ -33,6 +37,13 @@ Use `?qualityCheck` to see the documentation of the function.
 library("auditdata")
 # load your data
 qualityCheck(data)
+```
+
+or
+
+``` r
+# load your data
+auditdata::qualityCheck(data)
 ```
 
 This package is typically used before an analysis. After a table has been loaded into R, it may be necessary to perform a quality check on the data, namely to know the number of missing values by columns, the levels of categorical columns and their frequency ...
