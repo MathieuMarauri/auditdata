@@ -6,11 +6,13 @@
 #' @param title the text to use as title,
 #' @param title_style style object to use for title
 #'
-addCustomCell <- function(sheet, row_index, col_index, title, title_style){
-  rows <- createRow(sheet = sheet, rowIndex = row_index)
-  sheetTitle <- createCell(row = rows, colIndex = col_index)
-  setCellValue(cell = sheetTitle[[1, 1]], value = title)
-  setCellStyle(cell = sheetTitle[[1, 1]], cellStyle = title_style)
+addCustomCell <- function(wb, sheet, row_index, col_index, value, cell_style){
+  writeData(wb = wb,
+            sheet = sheet,
+            x = value,
+            startCol = col_index,
+            startRow = row_index)
+  addStyle(wb = wb, sheet = sheet, style = cell_style, rows = row_index, cols = col_index)
 }
 
 #'
@@ -34,7 +36,7 @@ freqTable <- function(data, name, length_out = Inf){
     by = data[[name]]
     ][
       order(-N),
-      .(value = data,
+      list(value = data,
         freq = N,
         percent = round(100 * N / sum(N),
                         digits = 0))]
@@ -47,39 +49,89 @@ freqTable <- function(data, name, length_out = Inf){
 #'
 #' This functions add a data frame to a sheet and styles it.
 #'
-#' It uses 'addDataFrame' from the xlsx package and add birder around the table.
+#' It encapsulates writeData, addStyle and createStyle from the openxlsx package.
 #'
+#' @param wb a workbook
+#' @param sheet a sheet in the workbook,
 #' @param table the table to be added,
-#' @param sheet the sheet where tha table will be added,
 #' @param start_row a numeric value for the starting row,
 #' @param start_column a numeric value for the starting column,
-#' @param col_names logical, should the colnames be written,
-#' @param colnames_style the style associated to the colnames,
-#' @param col_style a list of CellStyle. If the name of the list element is the
-#'   column number, it will be used to set the style of the column. Columns of
-#'   type Date and POSIXct are styled automatically even if colSyle=NULL.
+#' @param date logical. Is the first column of type date?
 #'
-addTable <- function(table, sheet, start_row, start_column, col_names, colnames_style, col_style, n_columns){
-  addDataFrame(x = table,
-               sheet = sheet,
-               col.names = col_names,
-               row.names = FALSE,
-               startRow = start_row ,
-               startColumn = start_column,
-               colnamesStyle = colnames_style,
-               colStyle = col_style,
-               showNA = TRUE,
-               characterNA = "NA")
-  cb <- CellBlock(sheet = sheet, startRow = start_row, startColumn = start_column, noRows = nrow(table) + col_names, noColumns = n_columns, create = FALSE)
-  # add borders
-  CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "BOTTOM", pen = "BORDER_THIN"), rowIndex = nrow(table) + col_names, colIndex = 1:n_columns)
-  CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "RIGHT", pen = "BORDER_THIN"), rowIndex = 1:(nrow(table) + col_names), colIndex = n_columns)
-  CB.setBorder(cellBlock = cb, border = Border(color = "black", position = c("RIGHT", "LEFT"), pen = "BORDER_THIN"), rowIndex = 1, colIndex = 1)
-  if(!col_names) CB.setBorder(cellBlock = cb, border = Border(color = "black", position = c("TOP"), pen = "BORDER_THIN"), rowIndex = 1, colIndex = 1:n_columns)
+addCustomTable <- function(wb, sheet, table, start_row, start_column, date = FALSE){
+  first_col_style <- createStyle(fontSize = 11,
+                                 textDecoration = "bold",
+                                 border = "LeftRight",
+                                 borderColour = "black",
+                                 borderStyle = "thin")
+  other_col_style <- createStyle(fontSize = 11,
+                                 halign = "center")
+  colnames_style <- createStyle(fontSize = 11,
+                                textDecoration = "bold",
+                                halign = "center",
+                                border = "TopBottom",
+                                borderColour = "black",
+                                borderStyle = "thin")
+  date_col_style <- createStyle(fontSize = 11,
+                                textDecoration = "bold",
+                                border = "LeftRight",
+                                borderColour = "black",
+                                borderStyle = "thin",
+                                numFmt = "DATE",
+                                halign = "left")
+  n_col <- ncol(table)
+  n_row <- nrow(table)
+  writeData(wb = wb,
+            sheet = sheet,
+            x = table,
+            startCol = start_column,
+            startRow = start_row,
+            colNames = TRUE,
+            rowNames = FALSE,
+            borders = "surrounding",
+            borderColour = "black",
+            borderStyle = "thin",
+            keepNA = TRUE)
+  addStyle(wb = wb,
+           sheet = sheet,
+           style = colnames_style,
+           rows = start_row,
+           cols = start_column:(start_column + n_col - 1),
+           gridExpand = TRUE,
+           stack = TRUE)
+  addStyle(wb = wb,
+           sheet = sheet,
+           style = first_col_style,
+           rows = start_row:(start_row + n_row),
+           cols = start_column,
+           gridExpand = TRUE,
+           stack = TRUE)
+  addStyle(wb = wb,
+           sheet = sheet,
+           style = other_col_style,
+           rows = (start_row + 1):(start_row + n_row),
+           cols = (start_column + 1):(start_column + n_col - 1),
+           gridExpand = TRUE,
+           stack = TRUE)
+  addStyle(wb = wb,
+           sheet = sheet,
+           style = createStyle(border = "right"),
+           rows = start_row,
+           cols = start_column + n_col - 1,
+           stack = TRUE)
+  if(date){
+    addStyle(wb = wb,
+             sheet = sheet,
+             style = date_col_style,
+             rows = start_row:(start_row + n_row),
+             cols = start_column,
+             gridExpand = TRUE,
+             stack = TRUE)
+  }
 }
 
 #'
-#'Performs an audit of a table.
+#'Performs a quality audit of a table
 #'
 #'This function performs a quality check on a table and creates an excel report if asked. The number
 #'of missing values by variable along with the quantiles for the numeric variables and a frequency
@@ -110,18 +162,21 @@ addTable <- function(table, sheet, start_row, start_column, col_names, colnames_
 #'  percent.
 #'@param return logical. Should an object be returned by the function. Default to TRUE.
 #'@param report logical. Should an excel report be rendered. Default to TRUE.
+#'@param verbose logical. Should messages be printed in the console. Default to TRUE.
 #'
 #'@return If return is TRUE then a summary table with number of missing values, percentage of
 #'  missing values and number of unique values by variable is returned as a data.table.
 #'
 #'@export
-qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 100, na_type = c("", " "), na_threshold = c(40, 80), return = TRUE, report = TRUE){
+qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 100, na_type = c("", " "), na_threshold = c(40, 80), return = TRUE, report = TRUE,
+                          verbose = TRUE){
 
+  if(verbose) cat("Beginning of the quality check\n")
   options(scipen = 999) # print numeric values in fixed notation unless they have more than 999 digits
   # Arguments check
   if(!return & !report) stop("Either 'return' or 'report' must be set to TRUE.")
-  if(is.data.frame(data) & !is.data.table(data)) data <- as.data.table(data)
   if(!is.data.frame(data) & !is.data.table(data)) stop("'data' must either be a data.frame or a data.table.")
+  if(!is.data.table(data)) data <- as.data.table(data)
   if(is.null(file)){
     file <- paste0(deparse(substitute(data)), "_quality_results.xlsx")
   } else{
@@ -139,19 +194,17 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
     }
   }
 
-  step <- ifelse(test = report,
-                 yes = 5,
-                 no = 4)
-
-  is.date <- function(x) inherits(x, 'Date') | inherits(x, 'POSIXct') | inherits(x, 'POSIXlt')
+  is_categorical <- function(x) is.factor(x) || is.character(x) || uniqueN(x) <= numeric_cutoff
+  is_numeric <- function(x) is.numeric(x) & uniqueN(x) > numeric_cutoff
+  is_date <- function(x) inherits(x, 'Date') | inherits(x, 'POSIXct') | inherits(x, 'POSIXlt')
 
   n_cols <- ncol(data)
   n_rows <- nrow(data)
   n_double <- nrow(unique(data))
   # columns types
-  categorical_var <- which(sapply(colnames(data), function(name) is.factor(data[[name]]) || is.character(data[[name]]) || uniqueN(data[[name]]) <= numeric_cutoff) == TRUE)
-  numeric_var <- which(sapply(colnames(data), function(name) is.numeric(data[[name]]) & uniqueN(data[[name]]) > numeric_cutoff) == TRUE)
-  date_var <- which(sapply(colnames(data), function(name) is.date(data[[name]])) == TRUE)
+  categorical_var <- which(sapply(colnames(data), function(name) is_categorical(data[[name]])) == TRUE)
+  numeric_var <- which(sapply(colnames(data), function(name) is_numeric(data[[name]])) == TRUE)
+  date_var <- which(sapply(colnames(data), function(name) is_date(data[[name]])) == TRUE)
 
   # summary output
   types <- rep(x = "undefined", length = n_cols)
@@ -160,11 +213,11 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
   types[date_var] <- "date"
   n_miss <- colSums(is.na(data))
   percent_miss <- 100 * n_miss / n_rows
-  n_unique_values <- t(data[, lapply(.SD, uniqueN)])
-  output_global <- cbind.data.frame(names(n_miss), types, n_miss, as.numeric(format(percent_miss, digits = 0)), n_unique_values)
-  colnames(output_global) <- c("Variables", "Type", "Missing values", "Percentage of missing values", "Unique values")
+  n_unique_values <- sapply(data, uniqueN)
+  output_global <- data.frame(names(n_miss), types, n_miss, as.numeric(format(percent_miss, digits = 0)), n_unique_values)
+  colnames(output_global) <- c("Variable", "Type", "Missing values", "Percentage of missing values", "Unique values")
 
-  cat(paste0("Step 1/", step, " completed \n"))
+  if(verbose) cat("Global summary created\n")
 
   # numeric output
   if(length(numeric_var) > 1){
@@ -177,14 +230,14 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
     colnames(output_num) <- c("Variable", "Min", paste0("Q", 1:9), "Max")
   }
 
-  cat(paste0("Step 2/", step, " completed \n"))
+  if(verbose) cat("Numerical summary created\n")
 
   # categorical output
   if(length(categorical_var) > 0){
     output_character <- lapply(categorical_var, function(name) freqTable(data = data, name = name, length_out = length_out))
   }
 
-  cat(paste0("Step 3/", step, " completed \n"))
+  if(verbose) cat("Categorical summary created\n")
 
   # date output
   if(length(date_var) > 0){
@@ -192,241 +245,263 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
     output_date_range <- lapply(date_var, function(name) data.frame(c("min", "max"), c(min(data[[name]], na.rm = TRUE), max(data[[name]], na.rm = TRUE))))
   }
 
-  cat(paste0("Step 4/", step, " completed \n"))
+  if(verbose) cat("Date summary created\n")
 
   # Excel output
   if(report){
     # initialisation of the excel report
-    workbook <- createWorkbook(type = "xlsx")
-    # creation of some cell styles
-    title_style <- CellStyle(wb = workbook) +
-      Font(wb = workbook,  heightInPoints = 16, isBold = TRUE, underline = 0)
-    subtitle_style <- CellStyle(wb = workbook) +
-      Font(workbook,  heightInPoints = 14, isItalic = FALSE, isBold = FALSE)
-    table_rownames_style <- CellStyle(wb = workbook) +
-      Font(wb = workbook, isBold = TRUE) +
-      Alignment(wrapText = TRUE, horizontal = "ALIGN_LEFT") +
-      Border(color = "black", position = c("LEFT", "RIGHT"), pen = "BORDER_THIN")
-    table_colnames_style <- CellStyle(wb = workbook) +
-      Font(wb = workbook, isBold = TRUE) +
-      Alignment(wrapText = TRUE, horizontal = "ALIGN_CENTER") +
-      Border(color = "black", position = c("TOP", "BOTTOM"), pen = "BORDER_THIN")
-    first_col_style <- CellStyle(wb = workbook) +
-      Font(wb = workbook, isBold = TRUE) +
-      Border(color = "black", position = c("RIGHT", "LEFT"), pen = "BORDER_THIN")
-    other_col_style <- CellStyle(wb = workbook) +
-      Alignment(wrapText = TRUE, horizontal = "ALIGN_CENTER")
-    date_col_style <- CellStyle(wb = workbook) +
-      Alignment(wrapText = TRUE, horizontal = "ALIGN_CENTER") +
-      Font(wb = workbook, isBold = TRUE) +
-      DataFormat(x = "dd-mm-yyyy") +
-      Border(color = "black", position = c("RIGHT", "LEFT"), pen = "BORDER_THIN")
-    table_title_style <- CellStyle(wb = workbook) +
-      Font(wb = workbook, isBold = TRUE) +
-      Alignment(wrapText = TRUE, horizontal = "ALIGN_CENTER") +
-      Border(color = "black", position = c("TOP", "BOTTOM", "RIGHT", "LEFT"), pen = "BORDER_THIN")
-    # creation of the different sheets
-    summary_sheet <- createSheet(wb = workbook, sheetName = "Summary")
+    workbook <- createWorkbook()
+    title_style <- createStyle(fontSize = 16,
+                               textDecoration = "bold")
+    subtitle_style <- createStyle(fontSize = 14)
+    table_title_style <- createStyle(fontSize = 11,
+                                     textDecoration = "bold",
+                                     border = "TopBottomLeftRight ",
+                                     borderColour = "black",
+                                     borderStyle = "thin",
+                                     halign = "center")
+    summary_sheetname <- "Summary"
+    addWorksheet(wb = workbook,
+                 sheetName = summary_sheetname,
+                 gridLines = FALSE)
     # title
-    addCustomCell(summary_sheet,
+    addCustomCell(wb = workbook,
+                  sheet = summary_sheetname,
                   row_index = 1,
                   col_index = 1,
-                  title = "Global quality check of the table",
-                  title_style = title_style)
+                  value = "Global quality check of the table",
+                  cell_style = title_style)
     # subtitle
-    addCustomCell(summary_sheet,
+    addCustomCell(wb = workbook,
+                  sheet = summary_sheetname,
                   row_index = 2,
                   col_index = 1,
-                  title = paste0("The table has ", n_cols, " columns and ", n_rows, " rows", " (", n_double, " of them are unique)"),
-                  title_style = subtitle_style)
+                  value = paste0("The table has ", n_cols, " columns and ", n_rows, " rows", " (", n_double, " of them are unique)"),
+                  cell_style = subtitle_style)
     # summary output
-    col_style <- append(list(`1` = first_col_style), rep(list(other_col_style), times = 4))
-    names(col_style) <- 1:5
-    addTable(table = output_global,
-             sheet = summary_sheet,
-             start_row = 4,
-             start_column = 2,
-             col_names = TRUE,
-             colnames_style = table_colnames_style,
-             col_style = col_style,
-             n_columns = 5)
+    addCustomTable(wb = workbook,
+                   table = output_global,
+                   sheet = summary_sheetname,
+                   start_row = 4,
+                   start_column = 2)
     # Change column width
-    cb <- CellBlock(sheet = summary_sheet, startRow = 4, startColumn = 2, noRows = n_cols + 1, noColumns = 4, create = FALSE)
     for(i in 4:6){
-      setColumnWidth(sheet = summary_sheet,
-                     colIndex = i,
-                     colWidth = nchar(colnames(output_global)[i-1]) + 3)
+      setColWidths(wb = workbook,
+                   sheet = summary_sheetname,
+                   cols = i,
+                   widths = nchar(colnames(output_global)[i-1]) + 3)
     }
-    setColumnWidth(sheet = summary_sheet,
-                   colIndex = 2,
-                   colWidth = max(nchar(colnames(data))) + 3)
-    setColumnWidth(sheet = summary_sheet,
-                   colIndex = 3,
-                   colWidth = nchar("character") + 3)
+    setColWidths(wb = workbook,
+                 sheet = summary_sheetname,
+                 cols = 2,
+                 widths = max(nchar(colnames(data))) + 3)
+    setColWidths(wb = workbook,
+                 sheet = summary_sheetname,
+                 cols = 3,
+                 widths = nchar("character") + 3)
     # fill cell depending on percentage value
     if(!is.null(na_threshold)){
       for(i in 1:nrow(output_global)){
         if(output_global[i, 4] > na_threshold[2]){
-          CB.setFont(cellBlock = cb, font = Font(wb = workbook, color = "red", isBold = TRUE), rowIndex = i + 1, colIndex = 4)
+          # CB.setFont(cellBlock = cb, font = Font(wb = workbook, color = "red", isBold = TRUE), rowIndex = i + 1, colIndex = 4)
+          addStyle(wb = workbook,
+                   sheet = summary_sheetname,
+                   style = createStyle(fontColour = 'red'),
+                   rows = i + 4,
+                   cols = 5,
+                   stack = TRUE)
         } else if(output_global[i, 4] > na_threshold[1]){
-          CB.setFont(cellBlock = cb, font = Font(wb = workbook, color = "orange", isBold = TRUE), rowIndex = i + 1, colIndex = 4)
+          # CB.setFont(cellBlock = cb, font = Font(wb = workbook, color = "orange", isBold = TRUE), rowIndex = i + 1, colIndex = 4)
+          addStyle(wb = workbook,
+                   sheet = summary_sheetname,
+                   style = createStyle(fontColour = 'orange'),
+                   rows = i + 4,
+                   cols = 5,
+                   stack = TRUE)
         } else{
-          CB.setFont(cellBlock = cb, font = Font(wb = workbook, color = "forestgreen", isBold = TRUE), rowIndex = i + 1, colIndex = 4)
+          # CB.setFont(cellBlock = cb, font = Font(wb = workbook, color = "forestgreen", isBold = TRUE), rowIndex = i + 1, colIndex = 4)
+          addStyle(wb = workbook,
+                   sheet = summary_sheetname,
+                   style = createStyle(fontColour = 'forestgreen'),
+                   rows = i + 4,
+                   cols = 5,
+                   stack = TRUE)
         }
       }
     }
     # numeric sheet
     if(length(numeric_var) > 0){
-      numeric_sheet <- createSheet(workbook, sheetName = "Numeric")
+      numeric_sheetname <- "Numeric"
+      addWorksheet(wb = workbook,
+                   sheetName = numeric_sheetname,
+                   gridLines = FALSE)
       # title
-      addCustomCell(numeric_sheet,
+      addCustomCell(wb = workbook,
+                    sheet = numeric_sheetname,
                     row_index = 1,
                     col_index = 1,
-                    title = "Quantiles of the numerical variables",
-                    title_style = title_style)
+                    value = "Quantiles of the numerical variables",
+                    cell_style = title_style)
       # numeric_output
-      col_style <- append(list(first_col_style), rep(list(other_col_style), times = 11))
-      names(col_style) <- 1:12
-      addDataFrame(x = output_num,
-                   sheet = numeric_sheet,
-                   startRow = 3,
-                   startColumn = 2,
-                   col.names = TRUE,
-                   row.names = FALSE,
-                   colnamesStyle = table_colnames_style,
-                   showNA = FALSE,
-                   colStyle = col_style)
-      # add borders
-      cb <- CellBlock(sheet = numeric_sheet, startRow = 3, startColumn = 2, noRows = length(numeric_var) + 1, noColumns = 12, create = FALSE)
-      CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "BOTTOM", pen = "BORDER_THIN"), rowIndex = length(numeric_var) + 1, colIndex = 1:12)
-      CB.setBorder(cellBlock = cb, border = Border(color = "black", position = "RIGHT", pen = "BORDER_THIN"), rowIndex = 1:(length(numeric_var) + 1), colIndex = 12)
-      CB.setBorder(cellBlock = cb, border = Border(color = "black", position = c("RIGHT", "LEFT"), pen = "BORDER_THIN"), rowIndex = 1, colIndex = 1)
+      addCustomTable(wb = workbook,
+                     sheet = numeric_sheetname,
+                     table = output_num,
+                     start_row = 3,
+                     start_column = 2)
       # columns width
-      setColumnWidth(sheet = numeric_sheet,
-                     colIndex = 2,
-                     colWidth = max(nchar(colnames(data))) + 3)
+      setColWidths(wb = workbook,
+                   sheet = numeric_sheetname,
+                   cols = 2,
+                   widths = max(nchar(colnames(data))) + 3)
     }
     # character sheet
     if(length(categorical_var) > 0){
-      character_sheet <- createSheet(wb = workbook, sheetName = "Character")
+      character_sheetname <- "Character"
+      addWorksheet(wb = workbook,
+                   sheetName = character_sheetname,
+                   gridLines = FALSE)
       # title
-      addCustomCell(character_sheet,
+      addCustomCell(wb = workbook,
+                    sheet = character_sheetname,
                     row_index = 1,
                     col_index = 1,
-                    title = "Frequences of modalities for the categorical variables",
-                    title_style = title_style)
+                    value = "Frequences of modalities for the categorical variables",
+                    cell_style = title_style)
       # subtitle
       if(max(unlist(lapply(length(categorical_var), function(index) nrow(output_character[[index]])))) == length_out){
-        addCustomCell(character_sheet,
+        addCustomCell(wb = workbook,
+                      sheet = character_sheetname,
                       row_index = 2,
                       col_index = 1,
-                      title = paste0("The maximum number of modalities is limited to ", length_out, ". Change the parameter 'length_out' to modify this behaviour."),
-                      title_style = subtitle_style)
+                      value = paste0("The maximum number of modalities is limited to ", length_out, ". Change the parameter 'length_out' to modify this behaviour."),
+                      cell_style = subtitle_style)
       }
       # character output
       liste_names <- unlist(lapply(names(categorical_var), function(name) return(c(name, rep(NA, 3)))))
-      col_style <- rep(list(table_title_style), times = length(categorical_var))
-      names(col_style) <- seq(from = 1, to = length(liste_names), by = 4)
-      addDataFrame(x = t(liste_names),
-                   sheet = character_sheet,
-                   col.names = FALSE,
-                   row.names = FALSE,
-                   startRow = 4,
-                   startColumn = 2,
-                   colStyle = col_style,
-                   showNA = TRUE)
+      writeData(wb = workbook,
+                sheet = character_sheetname,
+                x = t(liste_names),
+                startCol = 2,
+                startRow = 4,
+                colNames = FALSE,
+                rowNames = FALSE,
+                keepNA = FALSE)
+      addStyle(wb = workbook,
+               sheet = character_sheetname,
+               style = table_title_style,
+               rows = 4,
+               cols = seq(from = 2, to = 4 * length(categorical_var), by = 4),
+               gridExpand = FALSE,
+               stack = TRUE)
       # Change column width
       for(i in seq(from = 1, to = length(liste_names), by = 4)){
-        setColumnWidth(sheet = character_sheet,
-                       colIndex = i + 1,
-                       colWidth = nchar(liste_names[i]) + 3)
+        setColWidths(wb = workbook,
+                     sheet = character_sheetname,
+                     cols = i + 1,
+                     widths = nchar(liste_names[i]) + 3)
       }
-      col_style <- append(list(`1` = first_col_style), rep(list(other_col_style), times = 2))
-      names(col_style) <- 1:3
+
       for(index in seq_len(length(categorical_var))){
-        addTable(table = output_character[[index]],
-                 sheet = character_sheet,
-                 start_row = 5,
-                 start_column = (index - 1) * 4 + 2,
-                 col_names = TRUE,
-                 colnames_style = table_colnames_style,
-                 col_style = col_style,
-                 n_columns = 3)
+        addCustomTable(wb = workbook,
+                       sheet = character_sheetname,
+                       table = output_character[[index]],
+                       start_row = 5,
+                       start_column = (index - 1) * 4 + 2)
       }
     }
     # date sheet
     if(length(date_var) > 0){
-      date_sheet <- createSheet(wb = workbook, sheetName = "Date")
+      date_sheetname <- "Date"
+      addWorksheet(wb = workbook,
+                   sheetName = date_sheetname,
+                   gridLines = FALSE)
       # title
-      addCustomCell(date_sheet,
+      addCustomCell(wb = workbook,
+                    sheet = date_sheetname,
                     row_index = 1,
                     col_index = 1,
-                    title = "Frequences of modalities for the date variables",
-                    title_style = title_style)
+                    value = "Frequences of modalities for the date variables",
+                    cell_style = title_style)
       # subtitle
-      addCustomCell(date_sheet,
-                    row_index = 2,
-                    col_index = 1,
-                    title = paste0("The maximum number of modalities is limited to ", length_out, ". Change the parameter 'length_out' to modify this behaviour."),
-                    title_style = subtitle_style)
+      if(max(unlist(lapply(length(date_var), function(index) nrow(output_date_freq[[index]])))) == length_out){
+        addCustomCell(wb = workbook,
+                      sheet = date_sheetname,
+                      row_index = 2,
+                      col_index = 1,
+                      value = paste0("The maximum number of modalities is limited to ", length_out, ". Change the parameter 'length_out' to modify this behaviour."),
+                      cell_style = subtitle_style)
+      }
       # date output
       liste_names <- unlist(lapply(names(date_var), function(name) return(c(name, rep(NA, 6)))))
-      col_style <- rep(list(table_title_style), times = length(date_var))
-      names(col_style) <- seq(from = 1, to = length(liste_names), by = 7)
-      addDataFrame(x = t(liste_names),
-                   sheet = date_sheet,
-                   col.names = FALSE,
-                   row.names = FALSE,
-                   startRow = 4,
-                   startColumn = 2,
-                   colStyle = col_style,
-                   showNA = FALSE)
+      writeData(wb = workbook,
+                sheet = date_sheetname,
+                x = t(liste_names),
+                startCol = 2,
+                startRow = 4,
+                colNames = FALSE,
+                rowNames = FALSE,
+                keepNA = FALSE)
+      addStyle(wb = workbook,
+               sheet = date_sheetname,
+               style = table_title_style,
+               rows = 4,
+               cols = seq(from = 2, to = 7 * length(date_var), by = 7),
+               gridExpand = FALSE,
+               stack = TRUE)
       # Change column width
       for(i in seq(from = 1, to = length(liste_names), by = 7)){
-        setColumnWidth(sheet = date_sheet,
-                       colIndex = i + 1,
-                       colWidth = nchar(liste_names[i]) + 3)
+        setColWidths(wb = workbook,
+                     sheet = date_sheetname,
+                     cols = i + 1,
+                     widths = nchar(liste_names[i]) + 3)
       }
-      # add frequences
-      col_style <- append(list(`1` = date_col_style), rep(list(other_col_style), times = 2))
-      names(col_style) <- 1:3
+
       for(index in seq_len(length(date_var))){
-        addTable(table = output_date_freq[[index]],
-                 sheet = date_sheet,
-                 start_row = 5,
-                 start_column = (index - 1) * 7 + 2,
-                 col_names = TRUE,
-                 colnames_style = table_colnames_style,
-                 col_style = col_style,
-                 n_columns = 3)
+        addCustomTable(wb = workbook,
+                       sheet = date_sheetname,
+                       table = output_date_freq[[index]],
+                       start_row = 5,
+                       start_column = (index - 1) * 7 + 2,
+                       date = TRUE)
       }
       # add min/max
       for(index in seq_len(length(date_var))){
-        addTable(table = output_date_range[[index]],
-                 sheet = date_sheet,
-                 start_row = 5,
-                 start_column = (index - 1) * 7 + 6,
-                 col_names = FALSE,
-                 col_style = list(`1` = first_col_style, `2` = date_col_style),
-                 n_columns = 2)
+        writeData(wb = workbook,
+                  sheet = date_sheetname,
+                  x = output_date_range[[index]],
+                  startCol = (index - 1) * 7 + 6,
+                  startRow = 5,
+                  colNames = FALSE,
+                  rowNames = FALSE,
+                  borders = "all")
+        style <- createStyle(fontSize = 11,
+                             textDecoration = "bold",
+                             halign = "center")
+        addStyle(wb = workbook,
+                 sheet = date_sheetname,
+                 style = style,
+                 rows = c(5, 6),
+                 cols = (index - 1) * 7 + 6,
+                 gridExpand = TRUE,
+                 stack = TRUE)
       }
       for(i in seq(from = 1, to = length(liste_names), by = 7)){
-        setColumnWidth(sheet = date_sheet,
-                       colIndex = i + 6,
-                       colWidth = nchar("00-00-0000") + 3)
+        setColWidths(wb = workbook,
+                     sheet = date_sheetname,
+                     cols = i + 6,
+                     widths = nchar("00/00/0000") + 1)
       }
     }
-    saveWorkbook(wb = workbook, file = file)
+    saveWorkbook(wb = workbook, file = file, overwrite = TRUE)
 
-    cat(paste0("Step 5/", step, " completed \n"))
-    cat(paste0('Excel report saved in "', file.path(getwd(), file), '"'))
+    if(verbose) cat(paste0('Excel report saved in "', file.path(getwd(), file), '"'))
 
   }
 
-
   # R output
   if(return){
-    return(output_global[, -1])
+    rownames(output_global) <- NULL
+    return(output_global)
   }
 
 }

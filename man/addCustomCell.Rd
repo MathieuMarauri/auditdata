@@ -4,7 +4,7 @@
 \alias{addCustomCell}
 \title{Helper function to add titles.}
 \usage{
-addCustomCell(sheet, row_index, col_index, title, title_style)
+addCustomCell(wb, sheet, row_index, col_index, value, cell_style)
 }
 \arguments{
 \item{sheet}{sheet object to contain the title,}

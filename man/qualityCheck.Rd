@@ -2,11 +2,11 @@
 % Please edit documentation in R/functions.R
 \name{qualityCheck}
 \alias{qualityCheck}
-\title{Performs an audit of a table.}
+\title{Performs a quality audit of a table}
 \usage{
 qualityCheck(data, file = NULL, numeric_cutoff = -1, length_out = 100,
   na_type = c("", " "), na_threshold = c(40, 80), return = TRUE,
-  report = TRUE)
+  report = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{data}{the table to analyse,}
@@ -31,6 +31,8 @@ percent.}
 \item{return}{logical. Should an object be returned by the function. Default to TRUE.}
 
 \item{report}{logical. Should an excel report be rendered. Default to TRUE.}
+
+\item{verbose}{logical. Should messages be printed in the console. Default to TRUE.}
 }
 \value{
 If return is TRUE then a summary table with number of missing values, percentage of
