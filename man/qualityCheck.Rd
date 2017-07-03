@@ -5,8 +5,8 @@
 \title{Performs a quality audit of a table}
 \usage{
 qualityCheck(data, file = NULL, numeric_cutoff = -1, length_out = 100,
-  na_type = c("", " "), na_threshold = c(40, 80), return = TRUE,
-  report = TRUE, verbose = TRUE)
+  na_type = c("", " "), na_threshold = c(40, 80), report = TRUE,
+  verbose = TRUE)
 }
 \arguments{
 \item{data}{the table to analyse,}
@@ -27,8 +27,6 @@ values other than regular NA are treated as NA.}
 \item{na_threshold}{numeric vector defining the range of colors in the output for the percentage
 of missing values. Default to green before 40 percent, orange between 40 and 80 and red over 80
 percent.}
-
-\item{return}{logical. Should an object be returned by the function. Default to TRUE.}
 
 \item{report}{logical. Should an excel report be rendered. Default to TRUE.}
 

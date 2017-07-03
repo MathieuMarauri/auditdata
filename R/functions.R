@@ -163,7 +163,6 @@ addCustomTable <- function(wb, sheet, table, start_row, start_column, date = FAL
 #'@param na_threshold numeric vector defining the range of colors in the output for the percentage
 #'  of missing values. Default to green before 40 percent, orange between 40 and 80 and red over 80
 #'  percent.
-#'@param return logical. Should an object be returned by the function. Default to TRUE.
 #'@param report logical. Should an excel report be rendered. Default to TRUE.
 #'@param verbose logical. Should messages be printed in the console. Default to TRUE.
 #'
@@ -171,13 +170,12 @@ addCustomTable <- function(wb, sheet, table, start_row, start_column, date = FAL
 #'  missing values and number of unique values by variable is returned as a data.table.
 #'
 #'@export
-qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 100, na_type = c("", " "), na_threshold = c(40, 80), return = TRUE, report = TRUE,
+qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 100, na_type = c("", " "), na_threshold = c(40, 80), report = TRUE,
                           verbose = TRUE){
 
   if(verbose) cat("Beginning of the quality check\n")
   options(scipen = 999) # print numeric values in fixed notation unless they have more than 999 digits
   # Arguments check
-  if(!return & !report) stop("Either 'return' or 'report' must be set to TRUE.")
   if(!is.data.frame(data) & !is.data.table(data)) stop("'data' must either be a data.frame or a data.table.")
   if(!is.data.table(data)) data <- as.data.table(data)
   if(is.null(file)){
@@ -502,9 +500,7 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
   }
 
   # R output
-  if(return){
-    rownames(output_global) <- NULL
-    return(output_global)
-  }
+  rownames(output_global) <- NULL
+  invisible(output_global)
 
 }
