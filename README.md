@@ -25,7 +25,7 @@ The main function of this package, _qualityCheck_, computes the number of missin
 
 Percenttiles are computed for numeric variables. For categorical variables a frequency table of the unique values is returned. 
 
-An excel report is rendered using the [__openxlsx__](https://cran.r-project.org/web/packages/openxlsx/openxlsx.pdf "Title") package. The styles are defined within the function, To modify the styles, edit the function and manually change it.
+An excel report is rendered using the [__openxlsx__](https://cran.r-project.org/web/packages/openxlsx/openxlsx.pdf "Title") package. The styles are defined within the function, to modify the styles, edit the function and manually change it.
 
 Use `?qualityCheck` to see the documentation of the function.
 
@@ -37,13 +37,6 @@ Use `?qualityCheck` to see the documentation of the function.
 library("auditdata")
 # load your data
 qualityCheck(data)
-```
-
-or
-
-``` r
-# load your data
-auditdata::qualityCheck(data)
 ```
 
 This package is typically used before an analysis. After a table has been loaded into R, it may be necessary to perform a quality check on the data, namely to know the number of missing values by columns, the levels of categorical columns and their frequency ...
