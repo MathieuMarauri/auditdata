@@ -136,58 +136,67 @@ addCustomTable <- function(wb, sheet, table, start_row, start_column, date = FAL
 #'
 #'Performs a quality audit of a table
 #'
-#'This function performs a quality check on a table and creates an excel report if asked. The number
-#'of missing values by variable along with the quantiles for the numeric variables and a frequency
-#'table for each categorical variable can be found in the report.
+#'This function performs a quality check on a table and creates an excel report if asked.
+#'The number of missing values by variable along with the quantiles for the numeric
+#'variables and a frequency table for each categorical variable can be found in the
+#'report.
 #'
-#'The excel report is composed of several sheets. A 'summary' one with information regarding missing
-#'values for every variables, a 'numeric' sheet with the quantiles of all numeric varaibles, a
-#''categorical' sheet with a table with unique values and their frequency for each categorical
-#'variable and finally a 'date' sheet with also a frequency table for each date variable along with
-#'the minimum and maximum.
+#'The excel report is composed of several sheets. A 'summary' one with information
+#'regarding missing values for every variables, a 'numeric' sheet with the quantiles of
+#'all numeric varaibles, a 'categorical' sheet with a table with unique values and their
+#'frequency for each categorical variable and finally a 'date' sheet with also a frequency
+#'table for each date variable along with the minimum and maximum.
 #'
-#'The types are defined based on the types in the input table and on the value of other arguments.
-#''numeric_cutoff' allows numeric variables to be classified as categorical if they have less unique
-#'values than the value of 'numeric_cutoff'.
+#'The types are defined based on the types in the input table and on the value of other
+#'arguments. 'numeric_cutoff' allows numeric variables to be classified as categorical if
+#'they have less unique values than the value of 'numeric_cutoff'.
 #'
 #'@param data the table to analyse,
 #'@param file character, the name of the file where the report will be saved. Default to
 #'  paste0(deparse(substitute(data)), "_quality_results.xlsx"),
-#'@param numeric_cutoff numeric value indicating the maximum number of unique values for a numerical
-#'  variable to be classified as categorical. Default to -1 meaning that no numerical variables will
-#'  be treated as categorical,
-#'@param length_out numeric value indicating the maximum number in the output for categorical
-#'  variables,
-#'@param na_type charcater vector with valus that should be considered NA. Default to NULL, no
-#'  values other than regular NA are treated as NA.
-#'@param na_threshold numeric vector defining the range of colors in the output for the percentage
-#'  of missing values. Default to green before 40 percent, orange between 40 and 80 and red over 80
-#'  percent.
+#'@param numeric_cutoff numeric value indicating the maximum number of unique values for a
+#'  numerical variable to be classified as categorical. Default to -1 meaning that no
+#'  numerical variables will be treated as categorical,
+#'@param length_out numeric value indicating the maximum number in the output for
+#'  categorical variables,
+#'@param na_type charcater vector with valus that should be considered NA. Default to
+#'  NULL, no values other than regular NA are treated as NA.
+#'@param na_threshold numeric vector defining the range of colors in the output for the
+#'  percentage of missing values. Default to green before 40 percent, orange between 40
+#'  and 80 and red over 80 percent.
 #'@param report logical. Should an excel report be rendered. Default to TRUE.
 #'@param verbose logical. Should messages be printed in the console. Default to TRUE.
 #'
-#'@return If return is TRUE then a summary table with number of missing values, percentage of
-#'  missing values and number of unique values by variable is returned as a data.table.
+#'@return If return is TRUE then a summary table with number of missing values, percentage
+#'  of missing values and number of unique values by variable is returned as a data.table.
 #'
 #'@export
-qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 100, na_type = c("", " "), na_threshold = c(40, 80), report = TRUE,
+qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 100, 
+                          na_type = c("", " "), na_threshold = c(40, 80), report = TRUE,
                           verbose = TRUE){
 
   if(verbose) cat("Beginning of the quality check\n")
   options(scipen = 999) # print numeric values in fixed notation unless they have more than 999 digits
   # Arguments check
-  if(!is.data.frame(data) & !is.data.table(data)) stop("'data' must either be a data.frame or a data.table.")
+  if(!is.data.frame(data) & !is.data.table(data)) 
+    stop("'data' must either be a data.frame or a data.table.")
   if(!is.data.table(data)) data <- as.data.table(data)
   if(is.null(file)){
     file <- paste0(deparse(substitute(data)), "_quality_results.xlsx")
   } else{
-    if(!(is.character(file) & length(file) == 1)) stop("'file' must be character of length one.")
-    if(!endsWith(file, ".xlsx")) stop("'file' must end with '.xlsx'")
+    if(!(is.character(file) & length(file) == 1)) 
+      stop("'file' must be character of length one.")
+    if(!endsWith(file, ".xlsx")) 
+      stop("'file' must end with '.xlsx'")
   }
-  if(!(is.numeric(numeric_cutoff) & length(numeric_cutoff) == 1)) stop("'numeric_cutoff' must be numeric of length one.")
-  if(!(is.numeric(length_out) & length(length_out) == 1)) stop("'length_out' must be numeric of length one.")
-  if(!is.null(na_threshold)) if(!(is.numeric(na_threshold) & length(na_threshold) == 2)) stop("'na_threshold' must be numeric of length 2.")
-  if(!is.null(na_type)) if(!is.character(na_type)) stop("'na_type' must be a character vector.")
+  if(!(is.numeric(numeric_cutoff) & length(numeric_cutoff) == 1)) 
+    stop("'numeric_cutoff' must be numeric of length one.")
+  if(!(is.numeric(length_out) & length(length_out) == 1)) 
+    stop("'length_out' must be numeric of length one.")
+  if(!is.null(na_threshold)) if(!(is.numeric(na_threshold) & length(na_threshold) == 2)) 
+    stop("'na_threshold' must be numeric of length 2.")
+  if(!is.null(na_type)) if(!is.character(na_type)) 
+    stop("'na_type' must be a character vector.")
 
   if(!is.null(na_type)){
     for(j in seq_along(data)){
@@ -203,47 +212,75 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
   n_rows <- nrow(data)
   n_double <- nrow(unique(data))
   # columns types
-  categorical_var <- which(sapply(colnames(data), function(name) is_categorical(data[[name]])) == TRUE)
-  numeric_var <- which(sapply(colnames(data), function(name) is_numeric(data[[name]])) == TRUE)
-  date_var <- which(sapply(colnames(data), function(name) is_date(data[[name]])) == TRUE)
-
+  categorical_var <- which(sapply(X = colnames(data), 
+                                  FUN = function(name) is_categorical(data[[name]])) == TRUE)
+  numeric_var <- which(sapply(X = colnames(data),
+                              FUN = function(name) is_numeric(data[[name]])) == TRUE)
+  date_var <- which(sapply(X = colnames(data),
+                           FUN = function(name) is_date(data[[name]])) == TRUE)
+  logical_var <- which(sapply(X = colnames(data),
+                              FUN = function(name) is.logical(data[[name]])) == TRUE)
+  
   # summary output
   types <- rep(x = "undefined", length = n_cols)
   types[categorical_var] <- "character"
   types[numeric_var] <- "numeric"
   types[date_var] <- "date"
+  types[logical_var] <- 'logical'
   n_miss <- colSums(is.na(data))
   percent_miss <- 100 * n_miss / n_rows
   n_unique_values <- sapply(data, uniqueN)
-  output_global <- data.frame(names(n_miss), types, n_miss, as.numeric(format(percent_miss, digits = 0)), n_unique_values)
-  colnames(output_global) <- c("Variable", "Type", "Missing values", "Percentage of missing values", "Unique values")
+  output_global <- data.frame(names(n_miss), types, n_miss, 
+                              as.numeric(format(percent_miss, digits = 0)), 
+                              n_unique_values)
+  colnames(output_global) <- c("Variable", "Type", "Missing values", 
+                               "Percentage of missing values", "Unique values")
 
+  result <- list(global = output_global)
+  
   if(verbose) cat("Global summary created\n")
 
   # numeric output
   if(length(numeric_var) > 1){
-    output_num <- matrixStats::colQuantiles(as.matrix(data[, .SD, .SDcols = numeric_var]), probs = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), na.rm = TRUE)
+    output_num <- matrixStats::colQuantiles(as.matrix(data[, .SD, .SDcols = numeric_var]), 
+                                            probs = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), 
+                                            na.rm = TRUE)
     output_num <- cbind.data.frame(names(numeric_var), output_num)
     colnames(output_num) <- c("Variable", "Min", paste0("Q", 1:9), "Max")
+    result <- append(result, list(numeric = output_num))
   } else if(length(numeric_var) == 1){
-    output_num <- matrixStats::colQuantiles(as.matrix(data[, .SD, .SDcols = numeric_var]), probs = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), na.rm = TRUE)
+    output_num <- matrixStats::colQuantiles(as.matrix(data[, .SD, .SDcols = numeric_var]), 
+                                            probs = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), 
+                                            na.rm = TRUE)
     output_num <- cbind.data.frame(names(numeric_var), t(output_num))
     colnames(output_num) <- c("Variable", "Min", paste0("Q", 1:9), "Max")
+    result <- append(result, list(numeric = output_num))
   }
 
   if(verbose) cat("Numerical summary created\n")
 
   # categorical output
   if(length(categorical_var) > 0){
-    output_character <- lapply(categorical_var, function(name) freqTable(data = data, name = name, length_out = length_out))
+    output_character <- lapply(X = categorical_var, 
+                               FUN = function(name) freqTable(data = data, 
+                                                              name = name, 
+                                                              length_out = length_out))
+    result <- append(result, list(character = output_character))
   }
 
   if(verbose) cat("Categorical summary created\n")
 
   # date output
   if(length(date_var) > 0){
-    output_date_freq <- lapply(date_var, function(name) freqTable(data = data, name = name, length_out = length_out))
-    output_date_range <- lapply(date_var, function(name) data.frame(c("min", "max"), c(min(data[[name]], na.rm = TRUE), max(data[[name]], na.rm = TRUE))))
+    output_date_freq <- lapply(X = date_var, 
+                               FUN = function(name) freqTable(data = data, 
+                                                              name = name, 
+                                                              length_out = length_out))
+    output_date_range <- lapply(X = date_var, 
+                                FUN = function(name) data.frame(c("min", "max"), 
+                                                                c(min(data[[name]], na.rm = TRUE), 
+                                                                  max(data[[name]], na.rm = TRUE))))
+    result <- append(result, list(date = output_date_freq))
   }
 
   if(verbose) cat("Date summary created\n")
@@ -277,7 +314,8 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
                   sheet = summary_sheetname,
                   row_index = 2,
                   col_index = 1,
-                  value = paste0("The table has ", n_cols, " columns and ", n_rows, " rows", " (", n_double, " of them are unique)"),
+                  value = paste0("The table has ", n_cols, " columns and ", n_rows,
+                                 " rows", " (", n_double, " of them are unique)"),
                   cell_style = subtitle_style)
     # summary output
     addCustomTable(wb = workbook,
@@ -501,6 +539,6 @@ qualityCheck <- function (data, file = NULL, numeric_cutoff = -1, length_out = 1
 
   # R output
   rownames(output_global) <- NULL
-  invisible(output_global)
+  invisible(result)
 
 }
