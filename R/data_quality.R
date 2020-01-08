@@ -39,7 +39,7 @@ data_quality <- function(data, numeric_cutoff = -1, na_type = c("", " ", "NA", "
   }
   types <- sapply(X = data, FUN = function(x) which_type(x, numeric_cutoff))
   numeric_var <- names(types)[types == "numeric"]
-  categorical_var <- names(types)[types %in% c("factor", "character", "logical")]
+  categorical_var <- names(types)[types == "categorical"]
   date_var <- names(types)[types == "date"]
   result <- list(global = global_quality(
     data = data,
