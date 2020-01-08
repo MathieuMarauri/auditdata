@@ -244,7 +244,7 @@ report_data_quality <- function(data = NULL,
       writeData(
         wb = workbook,
         sheet = character_sheetname,
-        x = t(liste_names),
+        x = t(unlist(lapply(X = names(output_character), FUN = function(name) return(c(name, rep(NA, 3)))))),
         startCol = 2,
         startRow = 4,
         colNames = FALSE,
