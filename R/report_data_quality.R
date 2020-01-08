@@ -137,13 +137,13 @@ report_data_quality <- function(data = NULL,
     wb = workbook,
     sheet = summary_sheetname,
     cols = 2,
-    widths = max(nchar(output_global[, 1])) + 3
+    widths = max(nchar(output_global[["Variable"]])) + 3
   )
   setColWidths(
     wb = workbook,
     sheet = summary_sheetname,
     cols = 3,
-    widths = nchar("character") + 3
+    widths = max(nchar(output_global[["Type"]])) + 3
   )
   if (!is.null(na_threshold)) {
     for (i in 1:nrow(output_global)) {
