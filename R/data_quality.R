@@ -21,6 +21,7 @@
 #' @return a list with a global summary, and if available, information on numeric,
 #'   categorical and date variables
 #'
+#' @import data.table
 #' @export
 data_quality <- function(data, numeric_cutoff = -1, na_type = c("", " ", "NA", "NULL"),
                          max_length = Inf, global_only = FALSE) {

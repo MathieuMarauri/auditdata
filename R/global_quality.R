@@ -10,6 +10,8 @@
 #'
 #' @return a list of two elements, a table with number of missing values and other
 #'   information by variable and a named vector with the dimension of the table.
+#'   
+#' @import data.table
 #'
 #' @export
 global_quality <- function(data, numeric_cutoff = -1, na_type = c("", " ", "NA", "NULL")) {
@@ -48,7 +50,7 @@ global_quality <- function(data, numeric_cutoff = -1, na_type = c("", " ", "NA",
 #'   data.
 #'
 #' @return a table with as many rows as numeric variables and one column per decile.
-#'
+#' 
 numeric_quality <- function(data, numeric_var) {
   if (length(numeric_var) > 1) {
     output_num <- matrixStats::colQuantiles(as.matrix(data[, .SD, .SDcols = numeric_var]),

@@ -8,6 +8,8 @@
 #'
 #' @return a frequency table with the top 'max_length' most frequent
 #'   modalities and the associated percentage.
+#' 
+#' @import data.table
 #'
 freq_table <- function(x, max_length = Inf) {
   result <- as.data.table(x)[

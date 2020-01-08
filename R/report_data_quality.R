@@ -8,7 +8,7 @@
 #' If quality_res is provided, data, numeric_cutoff, na_type and max_length are ignored.
 #'
 #' @param data a data.frame
-#' @param quality_res an object with class qualityResult obtained with code{dataQuality}
+#' @param quality_res an object with class qualityResult obtained with \code{data_quality()}
 #' @param file output file name
 #' @param numeric_cutoff the minimum number of distinct values required for a numeric
 #'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
@@ -21,6 +21,8 @@
 #'
 #' @return invisible, a list with a global summary, and if available, information on numeric,
 #'   categorical and date variables
+#'
+#' @import openxlsx
 #'
 #' @export
 report_data_quality <- function(data = NULL,
@@ -225,12 +227,7 @@ report_data_quality <- function(data = NULL,
         value = "Frequences of modalities for the categorical variables",
         cell_style = title_style
       )
-      if (max(
-        sapply(
-          X = output_character,
-          FUN = function(x) nrow(x)
-        )
-      ) == max_length) {
+      if (max(sapply(X = output_character, FUN = function(x) nrow(x))) == max_length) {
         add_custom_cell(
           wb = workbook,
           sheet = character_sheetname,

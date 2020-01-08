@@ -7,6 +7,8 @@
 #' @param col_index col index of the cell
 #' @param value value to be added to the cell
 #' @param cell_style style object to customize the cell
+#' 
+#' @import openxlsx
 #'
 add_custom_cell <- function(wb, sheet, row_index, col_index, value, cell_style) {
   writeData(
@@ -30,6 +32,8 @@ add_custom_cell <- function(wb, sheet, row_index, col_index, value, cell_style) 
 #' @param start_row a numeric value for the starting row,
 #' @param start_column a numeric value for the starting column,
 #' @param date logical. Is the first column of type date?
+#' 
+#' @import openxlsx
 #'
 add_custom_table <- function(wb, sheet, table, start_row, start_column, date = FALSE) {
   first_col_style <- createStyle(
