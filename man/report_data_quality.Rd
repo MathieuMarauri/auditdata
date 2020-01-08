@@ -9,7 +9,7 @@ report_data_quality(
   quality_res = NULL,
   file = NULL,
   numeric_cutoff = -1,
-  na_type = c("", " ", "NA", "NULL"),
+  na_type = NA,
   max_length = Inf,
   global_only = FALSE,
   na_threshold = c(40, 80)
@@ -18,7 +18,7 @@ report_data_quality(
 \arguments{
 \item{data}{a data.frame}
 
-\item{quality_res}{an object with class qualityResult obtained with code{dataQuality}}
+\item{quality_res}{an object with class qualityResult obtained with \code{data_quality()}}
 
 \item{file}{output file name}
 

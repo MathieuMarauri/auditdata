@@ -7,7 +7,7 @@
 data_quality(
   data,
   numeric_cutoff = -1,
-  na_type = c("", " ", "NA", "NULL"),
+  na_type = NA,
   max_length = Inf,
   global_only = FALSE
 )

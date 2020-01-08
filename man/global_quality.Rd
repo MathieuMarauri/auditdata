@@ -5,7 +5,7 @@
 \title{This function performs a global quality analysis on a table. It outputs the type, the
 number of missing values and unique values by variable.}
 \usage{
-global_quality(data, numeric_cutoff = -1, na_type = c("", " ", "NA", "NULL"))
+global_quality(data, numeric_cutoff = -1, na_type = NA)
 }
 \arguments{
 \item{data}{a data.frame.}
