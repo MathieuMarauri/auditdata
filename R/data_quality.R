@@ -33,8 +33,8 @@ data_quality <- function(data, numeric_cutoff = -1, na_type = NA,
     stop("'numeric_cutoff' must be numeric of length one.")
   }
   if (!is.null(na_type)) {
-    if (!is.character(na_type)) {
-      stop("'na_type' must be a character vector.")
+    if (!is.character(na_type) & !is.na(na_type)) {
+      stop("'na_type' must be a character vector or NA.")
     }
   }
   types <- sapply(X = data, FUN = function(x) which_type(x, numeric_cutoff))
