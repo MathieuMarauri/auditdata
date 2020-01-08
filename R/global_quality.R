@@ -14,7 +14,7 @@
 #' @import data.table
 #'
 #' @export
-global_quality <- function(data, numeric_cutoff = -1, na_type = c("", " ", "NA", "NULL")) {
+global_quality <- function(data, numeric_cutoff = -1, na_type = NA) {
   if (is.data.table(data)) data <- as.data.table(data)
   n_cols <- ncol(data)
   n_rows <- nrow(data)
