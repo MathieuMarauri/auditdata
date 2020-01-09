@@ -237,14 +237,15 @@ report_data_quality <- function(data = NULL,
           cell_style = subtitle_style
         )
       }
-      liste_names <- sapply(
+      list_names <- lapply(
         X = names(output_character),
         FUN = function(name) return(c(name, rep(NA, 3)))
       )
+      list_names <- unlist(list_names)
       writeData(
         wb = workbook,
         sheet = character_sheetname,
-        x = t(unlist(lapply(X = names(output_character), FUN = function(name) return(c(name, rep(NA, 3)))))),
+        x = t(list_names),
         startCol = 2,
         startRow = 4,
         colNames = FALSE,
@@ -260,12 +261,12 @@ report_data_quality <- function(data = NULL,
         gridExpand = FALSE,
         stack = TRUE
       )
-      for (i in seq(from = 1, to = length(liste_names), by = 4)) {
+      for (i in seq(from = 1, to = length(list_names), by = 4)) {
         setColWidths(
           wb = workbook,
           sheet = character_sheetname,
           cols = i + 1,
-          widths = nchar(liste_names[i]) + 3
+          widths = nchar(list_names[i]) + 3
         )
       }
       for (index in seq_len(length(output_character))) {
@@ -297,12 +298,7 @@ report_data_quality <- function(data = NULL,
         cell_style = title_style
       )
       # subtitle
-      if (max(
-        sapply(
-          X = output_date_freq,
-          FUN = function(x) nrow(x)
-        )
-      ) == max_length) {
+      if (max(sapply(X = output_date_freq, FUN = function(x) nrow(x))) == max_length) {
         add_custom_cell(
           wb = workbook,
           sheet = date_sheetname,
@@ -313,14 +309,15 @@ report_data_quality <- function(data = NULL,
         )
       }
       # date output
-      liste_names <- sapply(
+      list_names <- lapply(
         X = names(output_date_freq),
         FUN = function(name) return(c(name, rep(NA, 6)))
       )
+      list_names <- unlist(list_names)
       writeData(
         wb = workbook,
         sheet = date_sheetname,
-        x = t(liste_names),
+        x = t(list_names),
         startCol = 2,
         startRow = 4,
         colNames = FALSE,
@@ -337,12 +334,12 @@ report_data_quality <- function(data = NULL,
         stack = TRUE
       )
       # Change column width
-      for (i in seq(from = 1, to = length(liste_names), by = 7)) {
+      for (i in seq(from = 1, to = length(list_names), by = 7)) {
         setColWidths(
           wb = workbook,
           sheet = date_sheetname,
           cols = i + 1,
-          widths = nchar(liste_names[i]) + 3
+          widths = nchar(list_names[i]) + 3
         )
       }
       
@@ -383,12 +380,12 @@ report_data_quality <- function(data = NULL,
           stack = TRUE
         )
       }
-      for (i in seq(from = 1, to = length(liste_names), by = 7)) {
+      for (i in seq(from = 2, to = length(list_names), by = 7)) {
         setColWidths(
           wb = workbook,
           sheet = date_sheetname,
-          cols = i + 6,
-          widths = nchar("00/00/0000") + 1
+          cols = c(i, i + 5),
+          widths = nchar("00/00/0000") + 2
         )
       }
     }
