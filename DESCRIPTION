@@ -5,7 +5,7 @@ Authors@R: person("Mathieu", "Marauri", email = "m.marauri@hotmail.fr", role = c
 Description: The main function of this package, 'report_data_quality()', computes the number of missing values by variables and depending on the types of the variables some other key indicators.
   Quantiles are computed for numeric variables and for categorical variables a frequency table of the unique values is returned. Date variables are also managable. 
   An excel report is rendered using the openxlsx package.
-Depends: R (>= 3.4.1)
+Depends: R (>= 3.4)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
