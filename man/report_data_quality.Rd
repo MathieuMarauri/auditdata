@@ -12,7 +12,8 @@ report_data_quality(
   na_type = NA,
   max_length = Inf,
   global_only = FALSE,
-  na_threshold = c(40, 80)
+  na_threshold = c(40, 80),
+  verbose = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ NULL, no values other than regular NA are treated as NA.}
 
 \item{na_threshold}{numeric vector of length 2 defining the range of colors in the
 output for the percentage of missing values. Default to c(40, 80).}
+
+\item{verbose}{logical, should information messages be printed in the console? default to TRUE.}
 }
 \value{
 invisible, a list with a global summary, and if available, information on numeric,

@@ -18,6 +18,7 @@
 #' @param global_only logical, whether to return only the global summary
 #' @param na_threshold numeric vector of length 2 defining the range of colors in the
 #'   output for the percentage of missing values. Default to c(40, 80).
+#' @param verbose logical, should information messages be printed in the console? default to TRUE.
 #'
 #' @return invisible, a list with a global summary, and if available, information on numeric,
 #'   categorical and date variables
@@ -25,14 +26,8 @@
 #' @import openxlsx
 #'
 #' @export
-report_data_quality <- function(data = NULL,
-                                quality_res = NULL,
-                                file = NULL,
-                                numeric_cutoff = -1,
-                                na_type = NA,
-                                max_length = Inf,
-                                global_only = FALSE,
-                                na_threshold = c(40, 80)) {
+report_data_quality <- function(data = NULL, quality_res = NULL, file = NULL, numeric_cutoff = -1, na_type = NA, 
+                                max_length = Inf, global_only = FALSE, na_threshold = c(40, 80), verbose = TRUE) {
   if (is.null(data) & is.null(quality_res)) {
     stop("One of data and quality_res should be provided.")
   }
@@ -177,6 +172,7 @@ report_data_quality <- function(data = NULL,
       }
     }
   }
+  if (verbose) cat("Global summary created\n")
   if (!global_only) {
     if ("numeric" %in% names(quality_res)) {
       output_num <- quality_res$numeric
@@ -210,6 +206,7 @@ report_data_quality <- function(data = NULL,
         cols = 2,
         widths = max(nchar(output_num[, 1])) + 3
       )
+      if (verbose) cat("Numeric summary created\n")
     }
     if ("categorical" %in% names(quality_res)) {
       output_character <- quality_res$categorical
@@ -278,6 +275,7 @@ report_data_quality <- function(data = NULL,
           start_column = (index - 1) * 4 + 2
         )
       }
+      if (verbose) cat("Categorical summary created\n")
     }
     if ("date" %in% names(quality_res)) {
       output_date_freq <- quality_res$date$freq
@@ -388,6 +386,7 @@ report_data_quality <- function(data = NULL,
           widths = nchar("00/00/0000") + 2
         )
       }
+      if (verbose) cat("Date summary created\n")
     }
   }
   saveWorkbook(wb = workbook, file = file, overwrite = TRUE)
