@@ -1,5 +1,12 @@
+# R specific files
 .Rproj.user
 .Rhistory
 .RData
 auditdata.Rproj
+test
+
+# mac specific fils
+*.DS_store
+
+# test folder
 test
