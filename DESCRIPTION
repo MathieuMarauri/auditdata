@@ -1,5 +1,5 @@
 Package: auditdata
-Title: Performs an Quality Audit of a data.frame
+Title: Performs a Quality Audit of a Table
 Version: 0.1.3
 Authors@R: person("Mathieu", "Marauri", email = "m.marauri@hotmail.fr", role = c("aut", "cre"))
 Description: The main function of this package, 'report_data_quality()', computes the number of missing values by variables and depending on the types of the variables some other key indicators.
