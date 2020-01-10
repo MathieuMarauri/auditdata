@@ -25,10 +25,10 @@
 #'   
 #' @examples
 #' data(mtcars)
-#' report_data_quality(mtcars, "quality_mtcars.xlsx")
+#' report_data_quality(mtcars, file = "quality_mtcars.xlsx")
 #' 
 #' data(iris)
-#' report_data_quality(mtcars, "quality_iris.xlsx")
+#' report_data_quality(mtcars, file = "quality_iris.xlsx")
 #'
 #' @import openxlsx
 #'
