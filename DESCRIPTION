@@ -14,3 +14,4 @@ Imports:
   data.table (>= 1.10.4),
   matrixStats (>= 0.51.0),
   openxlsx (>= 4.0.0)
+BugReports: https://github.com/MathieuMarauri/auditdata/issues
