@@ -40,3 +40,14 @@ arguments. 'numeric_cutoff' allows numeric variables to be classified as categor
 they have less unique values than the value of 'numeric_cutoff'. Date, POSIXct and
 POSIXlt are the only classes treated as date.
 }
+\examples{
+data(iris)
+res <- data_quality(iris)
+# global quality
+res$global
+# numerical data summary
+res$numeric_output
+# categorical data summary
+res$categorical_output
+
+}

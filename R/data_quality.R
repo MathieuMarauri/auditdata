@@ -21,6 +21,16 @@
 #' @return a list with a global summary, and if available, information on numeric,
 #'   categorical and date variables
 #'
+#' @examples
+#' data(iris)
+#' res <- data_quality(iris)
+#' # global quality
+#' res$global
+#' # numerical data summary
+#' res$numeric_output
+#' # categorical data summary
+#' res$categorical_output
+#' 
 #' @import data.table
 #' @export
 data_quality <- function(data, numeric_cutoff = -1, na_type = NA,

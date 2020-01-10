@@ -22,6 +22,13 @@
 #'
 #' @return invisible, a list with a global summary, and if available, information on numeric,
 #'   categorical and date variables
+#'   
+#' @examples
+#' data(mtcars)
+#' report_data_quality(mtcars, file = "quality_mtcars.xlsx")
+#' 
+#' data(iris)
+#' report_data_quality(mtcars, file = "quality_iris.xlsx")
 #'
 #' @import openxlsx
 #'
