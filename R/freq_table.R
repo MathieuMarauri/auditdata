@@ -32,3 +32,21 @@ freq_table <- function(x, max_length = Inf) {
   }
   return(result)
 }
+
+
+freq_table <- function(x, length_out = Inf, cum = FALSE){
+  result <- as.data.table(x)[ , .N, by = x] %>% 
+    .[order(-N), .(value = x,
+                   freq = N,
+                   percent = round(100 * N / sum(N),
+                                   digits = 0))]
+  if(cum) {
+    result <- result[, .(value, freq, percent, 
+                         cum_freq = cumsum(freq), 
+                         cum_percent = cumsum(percent))]
+  }
+  if(nrow(result) > length_out){
+    result <- result[1:length_out, ]
+  }
+  return(result)
+}
