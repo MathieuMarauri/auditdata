@@ -49,3 +49,11 @@ an excel report with predefined styles using the openxlsx package.
 \details{
 If quality_res is provided, data, numeric_cutoff, na_type and max_length are ignored.
 }
+\examples{
+data(mtcars)
+report_data_quality(mtcars, "quality_mtcars.xlsx")
+
+data(iris)
+report_data_quality(mtcars, "quality_iris.xlsx")
+
+}
