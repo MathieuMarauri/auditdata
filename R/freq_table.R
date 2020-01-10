@@ -12,7 +12,7 @@
 #' @import data.table
 #'
 freq_table <- function(x, max_length = Inf) {
-  x <- N <- NULL
+  N <- NULL
   result <- as.data.table(x)[
     ,
     .N,
