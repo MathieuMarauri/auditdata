@@ -25,7 +25,7 @@
 #'
 desc_cat <- function(x, length_out = 15, nchar = 20, numeric_cutoff = -1, plot = TRUE) {
   # check argument
-  if (!is_categorical(x, numeric_cutoff)) stop('"x" must be categorical')
+  if (!is_categorical(x, numeric_cutoff)) stop('"x" must be a character, a factor or a numeric vector with less than ')
   if (class(x) == "integer64") x <- as.character(x)
   # summary statistics
   length <- length(x)
