@@ -4,7 +4,7 @@
 #' statistics and plots the frequency table.
 #'
 #' @param x a character vector
-#' @param lenght_out the maximum number of different values to display in the freqeuncy
+#' @param max_length the maximum number of different values to display in the freqeuncy
 #'   table and the frequency plot
 #' @param nchar the maximum number of characters to display for each value in the plot
 #' @param numeric_cutoff the minimum number of distinct values required for a numeric
@@ -16,16 +16,16 @@
 #'
 #' @return a list with two tables, one with summary statistics (lenght, number of na,
 #'   number of unique and number of duplicate) and a frequency table for the top most
-#'   frequent length_out values. If plot is FALSE then the graph of the frequency table is
+#'   frequent max_length values. If plot is FALSE then the graph of the frequency table is
 #'   also returned in the list. If x has 2 unique values then a stack bar chart is
 #'   created, if it has only one then only the tables are returned.
 #'
-#' @export
 #' @import ggplot2
 #'
-desc_cat <- function(x, length_out = 15, nchar = 20, numeric_cutoff = -1, plot = TRUE) {
+desc_cat <- function(x, max_length = 15, nchar = 20, numeric_cutoff = -1, plot = TRUE) {
   # check argument
-  if (!is_categorical(x, numeric_cutoff)) stop('"x" must be a character, a factor or a numeric vector with less than ')
+  if (!is_categorical(x, numeric_cutoff)) 
+    stop(paste0('"x" must be a character, a factor or a numeric vector with less than ', ifelse(numeric_cutoff == -1, Inf, numeric_cutoff), ' unique values'))
   if (class(x) == "integer64") x <- as.character(x)
   # summary statistics
   length <- length(x)
@@ -48,7 +48,7 @@ desc_cat <- function(x, length_out = 15, nchar = 20, numeric_cutoff = -1, plot =
     Value = c(length, n_na, n_unique, n_dup_or_lev),
     stringsAsFactors = FALSE
   )
-  freq_table <- freq_table(x, length_out = length_out, cum = TRUE)
+  freq_table <- freq_table(x, max_length = max_length, cum = TRUE)
   if (n_unique > 2) {
     # plots
     freq_table$value <- factor(freq_table$value,
