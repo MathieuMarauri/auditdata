@@ -75,10 +75,10 @@ report_data_quality <- function(data = NULL, quality_res = NULL, file = NULL, nu
       global_only = global_only
     )
   }
-  output_global <- quality_res$global$global
-  n_cols <- quality_res$global$dim["ncol"]
-  n_rows <- quality_res$global$dim["nrow"]
-  n_unique <- quality_res$global$dim["unique"]
+  output_global <- quality_res$global$table
+  n_cols <- quality_res$global$global$n_cols
+  n_rows <- quality_res$global$global$n_rows
+  n_unique <- quality_res$global$global$n_unique
   
   
   workbook <- createWorkbook()
