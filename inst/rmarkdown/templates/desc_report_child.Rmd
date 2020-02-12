@@ -3,7 +3,7 @@
 
 ```{r describe_{{i}}}
 x <- data${{i}}
-description <- describe(x, numeric_cutoff = numeric_cutoff, max_length = max_length, nchar = nchar, plot = FALSE)
+description <- audit_vector(x, numeric_cutoff = numeric_cutoff, max_length = max_length, nchar = nchar, plot = FALSE)
 ```
 
 ```{r desc_{{i}}_other_table, results = 'asis'}

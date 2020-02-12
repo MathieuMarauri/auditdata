@@ -59,7 +59,7 @@
 #' @export
 #' @import data.table
 #'
-global_quality <- function(data, numeric_cutoff = -1, na_type = NULL) {
+audit_global <- function(data, numeric_cutoff = -1, na_type = NULL) {
   # Arguments check
   if (!is.data.frame(data) & !is.data.table(data)) {
     stop("'data' must either be a data.frame or a data.table.")
@@ -137,7 +137,7 @@ global_quality <- function(data, numeric_cutoff = -1, na_type = NULL) {
 #'
 #' @return a table with as many rows as numeric variables and one column per decile.
 #' 
-numeric_quality <- function(data, numeric_var) {
+audit_numeric <- function(data, numeric_var) {
   if (length(numeric_var) > 1) {
     output_num <- matrixStats::colQuantiles(as.matrix(data[, .SD, .SDcols = numeric_var]),
                                             probs = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
@@ -169,7 +169,7 @@ numeric_quality <- function(data, numeric_var) {
 #'
 #' @return a list as many elements as categorical variables.
 #'
-categorical_quality <- function(data, categorical_var, max_length = Inf) {
+audit_categorical <- function(data, categorical_var, max_length = Inf) {
   output_character <- lapply(
     X = categorical_var,
     FUN = function(name) freq_table(
@@ -191,7 +191,7 @@ categorical_quality <- function(data, categorical_var, max_length = Inf) {
 #'
 #' @return a list with as many elements as date variables.
 #'
-date_quality <- function(data, date_var, max_length = Inf) {
+audit_date <- function(data, date_var, max_length = Inf) {
   output_date_freq <- lapply(
     X = date_var,
     FUN = function(name) freq_table(

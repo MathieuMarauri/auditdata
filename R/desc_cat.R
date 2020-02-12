@@ -20,7 +20,7 @@
 #'
 #' @import ggplot2
 #'
-desc_cat <- function(x, max_length = 15, nchar = 20, plot = TRUE) {
+audit_vector_categorical <- function(x, max_length = 15, nchar = 20, plot = TRUE) {
   # # check argument
   # if (!is_categorical(x, numeric_cutoff)) 
   #   stop(paste0('"x" must be a character, a factor or a numeric vector with less than ', numeric_cutoff, ' unique values'))

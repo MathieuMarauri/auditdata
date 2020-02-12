@@ -20,18 +20,18 @@
 #'
 #' @export
 #'
-describe <- function(x, na_type = NULL, numeric_cutoff = -1, max_length = 15, nchar = 20, plot = TRUE) {
+audit_vector <- function(x, na_type = NULL, numeric_cutoff = -1, max_length = 15, nchar = 20, plot = TRUE) {
   # Set vaues in na_type to NA
   if (!is.null(na_type)) {
     x[x %in% na_type] <- NA
   }
   # Use the proper description function
   if (is_date(x)) {
-    result <- desc_date(x, plot = plot)
+    result <- audit_vector_date(x, plot = plot)
   } else if (is_numeric(x, numeric_cutoff)) {
-    result <- desc_num(x, plot = plot)
+    result <- audit_vector_numeric(x, plot = plot)
   } else if (is_categorical(x, numeric_cutoff))  {
-    result <- desc_cat(x, max_length = max_length, nchar = nchar, plot = plot)
+    result <- audit_vector_categorical(x, max_length = max_length, nchar = nchar, plot = plot)
   }
   return(result)
 }

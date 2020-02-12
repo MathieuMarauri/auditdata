@@ -15,7 +15,7 @@
 #' @import data.table
 #' @import ggplot2
 #'
-plotMissing <- function(data, na_type = NULL, order = FALSE) {
+audit_missing <- function(data, na_type = NULL, order = FALSE) {
   # check argument
   if (!is.data.frame(data)) {
     stop("'data' must be a data.frame.")

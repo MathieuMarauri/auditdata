@@ -299,7 +299,7 @@ records", na.value = "transparent") +
 #'
 #' @import ggplot2
 #'
-desc_date <- function(x, plot = TRUE) {
+audit_vector_date <- function(x, plot = TRUE) {
   # check argument
   # if (!is_date(x)) {
   #   stop('"x" must be a date.')

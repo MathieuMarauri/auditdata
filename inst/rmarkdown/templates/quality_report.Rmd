@@ -24,7 +24,7 @@ data <- params$data
 ```
 
 ```{r data_quality}
-data_quality <- global_quality(data = data, numeric_cutoff = params$numeric_cutoff, na_type = params$na_type)
+data_quality <- audit_global(data = data, numeric_cutoff = params$numeric_cutoff, na_type = params$na_type)
 quality_info <- data_quality$global
 quality_output <- data_quality$table
 ```
@@ -70,5 +70,5 @@ kable(x = quality_output, format = "html", escape = FALSE, digits = 2, format.ar
 ## Missing values
 
 ```{r na_plot, fig.align = 'center', dpi = 300, out.width = '100%', fig.height = 6}
-plotMissing(data, na_type = params$na_type, order = params$order)
+audit_missing(data, na_type = params$na_type, order = params$order)
 ```

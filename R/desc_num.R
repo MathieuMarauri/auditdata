@@ -18,7 +18,7 @@
 #' @import ggplot2
 #' @importFrom cowplot plot_grid
 #'
-desc_num <- function(x, plot = TRUE) {
+audit_vector_numeric <- function(x, plot = TRUE) {
   # check argument
   # if (!is_numeric(x, numeric_cutoff)) 
   #   stop(paste0('"x" must be a numeric vector with more than ', numeric_cutoff, ' unique values'))
