@@ -1,0 +1,39 @@
+---
+params: 
+  data: NULL
+  numeric_cutoff: !r -1
+  max_length: !r 15
+  nchar: !r 20
+title: "Univariate exploratory analysis"
+output:
+  html_document:
+    keep_md: yes
+    toc: yes
+    toc_float: yes
+    highlight: tango
+    theme: readable
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(include = TRUE, echo = FALSE, eval = TRUE)
+```
+
+```{r import_data}
+data <- params$data
+```
+
+```{r describe_parameters}
+data <- params$data
+numeric_cutoff <- params$numeric_cutoff
+max_length <- params$max_length
+nchar <- params$nchar
+```
+
+```{r uniDesc}
+out <- character(length = ncol(data))
+for (i in colnames(data)) {
+  out <- c(out, knit_expand(file = 'desc_report_child.Rmd'))
+}
+```
+
+`r paste(knit(text = out), collapse = '\n')`

@@ -1,0 +1,48 @@
+
+## {{i}}
+
+```{r describe_{{i}}}
+x <- data${{i}}
+description <- describe(x, numeric_cutoff = numeric_cutoff, max_length = max_length, nchar = nchar, plot = FALSE)
+```
+
+```{r desc_{{i}}_other_table, results = 'asis'}
+if (is_date(x)) {
+  # summary_stat
+  print(kable(x = description$summary_stat, format = 'html', escape = FALSE, digits = 2, format.args = list(decimal.mark = ".", big.mark = " ")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center"))
+} else if (is_numeric(x, numeric_cutoff = numeric_cutoff)) {
+  # summary_stat
+  print(kable(x = description$summary_stat, format = 'html', escape = FALSE, digits = 2, format.args = list(decimal.mark = ".", big.mark = " ")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center"))
+  # extreme_values
+  colnames(description$extreme_values) <- NULL
+  print(kable(x = description$extreme_values, format = 'html', escape = FALSE, row.names = TRUE, digits = 2, format.args = list(decimal.mark = ".", big.mark = " ")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center") %>%
+  column_spec(1, bold = TRUE, border_right = TRUE))
+  # percentiles
+  colnames(description$percentiles) <- NULL
+  print(kable(x = description$percentiles, format = 'html', escape = FALSE, row.names = TRUE, digits = 2, format.args = list(decimal.mark = ".", big.mark = " ")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center") %>%
+  column_spec(1, bold = TRUE, border_right = TRUE))
+} else if (is_categorical(x, numeric_cutoff = numeric_cutoff)) {
+  # summary_stat
+  print(kable(x = description$summary_stat, format = 'html', escape = FALSE, digits = 2, format.args = list(decimal.mark = ".", big.mark = " ")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center"))
+  # freq_table
+  print(kable(x = description$freq_table, format = 'html', escape = FALSE, digits = 2, format.args = list(decimal.mark = ".", big.mark = " ")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center"))
+}
+```
+
+
+```{r desc_{{i}}_plot, , fig.align = 'center', dpi = 300, out.width = '100%', fig.height = 4, fig.width = 10}
+if (is_date(x)) {
+  print(description$missing_plot)
+  print(description$freq_plot)
+} else if (is_numeric(x, numeric_cutoff = numeric_cutoff)) {
+  print(description$graph)
+} else if (is_categorical(x, numeric_cutoff = numeric_cutoff) & length(unique(x[!is.na(x)])) > 1) {
+  print(description$graph)
+}
+```
