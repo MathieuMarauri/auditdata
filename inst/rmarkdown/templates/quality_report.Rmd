@@ -1,0 +1,74 @@
+---
+params: 
+  data: data
+  na_type: !r NULL
+  numeric_cutoff: !r -1
+  na_threshold: !r NULL
+  order: !r FALSE
+title: "Data quality"
+output:
+  html_document:
+    keep_md: yes
+    toc: yes
+    toc_float: yes
+    highlight: tango
+    theme: readable
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(include = TRUE, echo = FALSE, eval = TRUE)
+```
+
+```{r import_data}
+data <- params$data
+```
+
+```{r data_quality}
+data_quality <- global_quality(data = data, numeric_cutoff = params$numeric_cutoff, na_type = params$na_type)
+quality_info <- data_quality$global
+quality_output <- data_quality$table
+```
+
+
+## Global figures
+
+The table has `r quality_info$n_cols` columns and `r quality_info$n_rows` rows (`r quality_info$n_unique` are unique). There are `r round(quality_info$n_missing / (quality_info$n_cols * quality_info$n_rows) * 100, digits = 0)`% missing values in the dataset.
+
+```{r quality_table_formating}
+if (!is.null(params$na_threshold)) {
+  quality_output <- quality_output %>%
+    mutate(
+      `Missing values` = ifelse(
+        `Percentage of missing values` <= params$na_threshold[1],
+        cell_spec(`Missing values`, format = "html", color = "green"),
+        ifelse(
+          `Percentage of missing values` > params$na_threshold[2],
+          cell_spec(`Missing values`, format = "html", color = "red"),
+          cell_spec(`Missing values`, format = "html", color = "orange")
+        )
+      ),
+      percent = `Percentage of missing values`,
+      `Percentage of missing values` = ifelse(
+        `Percentage of missing values` <= params$na_threshold[1],
+        cell_spec(`Percentage of missing values`, format = "html", color = "green"),
+        ifelse(
+          `Percentage of missing values` > params$na_threshold[2],
+          cell_spec(`Percentage of missing values`, format = "html", color = "red"),
+          cell_spec(`Percentage of missing values`, format = "html", color = "orange")
+        )
+      ),
+      `Percentage of missing values` = color_bar("lightblue", fun = function(x) x / 100)(percent)
+    )
+}
+```
+
+```{r quality_table}
+kable(x = quality_output, format = "html", escape = FALSE, digits = 2, format.args = list(decimal.mark = ".", big.mark = " ")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center")
+```
+
+## Missing values
+
+```{r na_plot, fig.align = 'center', dpi = 300, out.width = '100%', fig.height = 6}
+plotMissing(data, na_type = params$na_type, order = params$order)
+```
