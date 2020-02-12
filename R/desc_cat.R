@@ -7,8 +7,6 @@
 #' @param max_length the maximum number of different values to display in the freqeuncy
 #'   table and the frequency plot
 #' @param nchar the maximum number of characters to display for each value in the plot
-#' @param numeric_cutoff the minimum number of distinct values required for a numeric
-#'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
 #' @param plot logical, whether to plot the graph. Defaults to TRUE.
 #'
 #' @details Missing values are removed at the beginning and statistics are computed on the
@@ -22,11 +20,11 @@
 #'
 #' @import ggplot2
 #'
-desc_cat <- function(x, max_length = 15, nchar = 20, numeric_cutoff = -1, plot = TRUE) {
-  # check argument
-  if (!is_categorical(x, numeric_cutoff)) 
-    stop(paste0('"x" must be a character, a factor or a numeric vector with less than ', numeric_cutoff, ' unique values'))
-  if (class(x) == "integer64") x <- as.character(x)
+desc_cat <- function(x, max_length = 15, nchar = 20, plot = TRUE) {
+  # # check argument
+  # if (!is_categorical(x, numeric_cutoff)) 
+  #   stop(paste0('"x" must be a character, a factor or a numeric vector with less than ', numeric_cutoff, ' unique values'))
+  # if (class(x) == "integer64") x <- as.character(x)
   # summary statistics
   length <- length(x)
   x <- x[!is.na(x)]

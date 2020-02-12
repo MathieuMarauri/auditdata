@@ -13,10 +13,10 @@
 #' @import ggplot2
 #'
 plot_freq_date_group <- function(x, group, title = TRUE) {
-  # check argument
-  if (!is_date(x)) {
-    stop('"x" must be a date.')
-  }
+  # # check argument
+  # if (!is_date(x)) {
+  #   stop('"x" must be a date.')
+  # }
   group <- match.arg(group, choices = c("hour", "weekday", "month", "year"))
   date_pattern <- c("hour" = "%H", "weekday" = "%A", "month" = "%b", "year" = "%Y")
   min_year <- as.numeric(format(min(x), "%Y"))
@@ -84,9 +84,9 @@ plot_freq_date_group <- function(x, group, title = TRUE) {
 #'
 plot_freq_date <- function(x) {
   # check argument
-  if (!is_date(x)) {
-    stop('"x" must be a date.')
-  }
+  # if (!is_date(x)) {
+  #   stop('"x" must be a date.')
+  # }
   # indicators of hourly, daily, monthly and yearly data
   hourly <- length(unique(format(x, "%H"))) > 1
   daily <- length(unique(format(x, "%d"))) > 1
@@ -141,9 +141,9 @@ plot_freq_date <- function(x) {
 #'
 plot_missing_date <- function(x) {
   # check argument
-  if (!is_date(x)) {
-    stop('"x" must be a date.')
-  }
+  # if (!is_date(x)) {
+  #   stop('"x" must be a date.')
+  # }
   # indicators of hourly, daily, monthly and yearly data
   daily <- length(unique(format(x, "%d"))) > 1
   monthly <- length(unique(format(x, "%B"))) > 1
@@ -301,9 +301,9 @@ records", na.value = "transparent") +
 #'
 desc_date <- function(x, plot = TRUE) {
   # check argument
-  if (!is_date(x)) {
-    stop('"x" must be a date.')
-  }
+  # if (!is_date(x)) {
+  #   stop('"x" must be a date.')
+  # }
   # summary statistics
   # length
   length <- length(x)

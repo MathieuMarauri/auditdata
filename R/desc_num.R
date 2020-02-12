@@ -4,8 +4,6 @@
 #' vector.
 #'
 #' @param x a numeric vector
-#' @param numeric_cutoff the minimum number of distinct values required for a numeric
-#'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
 #' @param plot logical, whether to plot the graph. Defaults to TRUE.
 #'
 #' @details Missing values are removed at the beginning and statistics are computed on the
@@ -20,10 +18,10 @@
 #' @import ggplot2
 #' @importFrom cowplot plot_grid
 #'
-desc_num <- function(x, numeric_cutoff = -1, plot = TRUE) {
+desc_num <- function(x, plot = TRUE) {
   # check argument
-  if (!is_numeric(x, numeric_cutoff)) 
-    stop(paste0('"x" must be a numeric vector with more than ', numeric_cutoff, ' unique values'))
+  # if (!is_numeric(x, numeric_cutoff)) 
+  #   stop(paste0('"x" must be a numeric vector with more than ', numeric_cutoff, ' unique values'))
   # summary stats
   length <- length(x)
   x <- x[!is.na(x)]
