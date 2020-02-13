@@ -33,7 +33,7 @@
 #' 
 #' @import data.table
 #' @export
-data_quality <- function(data, numeric_cutoff = -1, na_type = NA,
+data_quality <- function(data, numeric_cutoff = -1, na_type = NULL,
                          max_length = Inf, global_only = FALSE) {
   if (!is.data.frame(data)) {
     stop("'data' must be have data.frame class.")

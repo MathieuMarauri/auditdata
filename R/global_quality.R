@@ -1,19 +1,4 @@
-#'
-#' This function performs a global quality analysis on a table. It outputs the type, the
-#' number of missing values and unique values by variable.
-#'
-#' @param data a data.frame.
-#' @param numeric_cutoff the minimum number of distinct values required for a numeric
-#'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
-#' @param na_type charcater vector with valus that should be considered NA. Default to
-#'   NULL, no values other than regular NA are treated as NA.
-#'
-#' @return a list of two elements, a table with number of missing values and other
-#'   information by variable and a named vector with the dimension of the table.
-#'   
-#' @import data.table
-#'
-#' @export
+
 # global_quality <- function(data, numeric_cutoff = -1, na_type = NA) {
 #   if (is.data.table(data)) data <- as.data.table(data)
 #   n_cols <- ncol(data)
@@ -56,9 +41,9 @@
 #' @param return a list with two elements, one with global information (dimensions, unique
 #'   values and missing values) and a table with information for each variable.
 #'
-#' @export
 #' @import data.table
 #'
+#' @export
 audit_global <- function(data, numeric_cutoff = -1, na_type = NULL) {
   # Arguments check
   if (!is.data.frame(data) & !is.data.table(data)) {

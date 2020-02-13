@@ -21,8 +21,8 @@
 #' @importFrom formattable color_bar
 #' @importFrom kableExtra kable_styling cell_spec
 #' @importFrom rmarkdown render
+#' 
 #' @export
-#'
 audit_report_html_global <- function(data,
                                      output_dir = ".",
                                      output_file = NULL,
@@ -77,8 +77,8 @@ audit_report_html_global <- function(data,
 #' @importFrom magrittr "%>%"
 #' @importFrom kableExtra kable_styling column_spec
 #' @importFrom rmarkdown render
+#' 
 #' @export
-#'
 audit_report_html <- function(data,
                               numeric_cutoff = -1,
                               max_length = 15,
@@ -142,7 +142,7 @@ audit_report_html <- function(data,
 #' @import openxlsx
 #'
 #' @export
-audit_report_excel <- function(data = NULL, quality_res = NULL, file = NULL, numeric_cutoff = -1, na_type = NA, 
+audit_report_excel <- function(data = NULL, quality_res = NULL, file = NULL, numeric_cutoff = -1, na_type = NULL, 
                                max_length = Inf, global_only = FALSE, na_threshold = c(40, 80), verbose = TRUE) {
   if (is.null(data) & is.null(quality_res)) {
     stop("One of data and quality_res should be provided.")

@@ -12,6 +12,8 @@ LazyData: true
 RoxygenNote: 7.0.2
 Imports: 
   data.table (>= 1.10.4),
+  knitr (>= 1.26),
+  rmarkdown (>= 2.0),
   matrixStats (>= 0.51.0),
   openxlsx (>= 4.0.0)
 BugReports: https://github.com/MathieuMarauri/auditdata/issues

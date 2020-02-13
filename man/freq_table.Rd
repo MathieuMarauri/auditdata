@@ -4,12 +4,14 @@
 \alias{freq_table}
 \title{Helper function for 'qualityCheck'}
 \usage{
-freq_table(x, max_length = Inf)
+freq_table(x, max_length = Inf, cum = FALSE)
 }
 \arguments{
 \item{x}{the table containing the data,}
 
 \item{max_length}{the maximum number of rows in the output.}
+
+\item{cum}{shoulb cumulative frequencies and percentages be given? Default to FALSE}
 }
 \value{
 a frequency table with the top 'max_length' most frequent
