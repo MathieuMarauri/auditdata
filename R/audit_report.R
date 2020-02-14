@@ -17,13 +17,7 @@
 #'
 #' @examples
 #' data(iris)
-#' res <- data_quality(iris)
-#' # global quality
-#' res$global
-#' # numerical data summary
-#' res$numeric_output
-#' # categorical data summary
-#' res$categorical_output
+#' audit_report_html_global(iris, "iris.html")
 #'
 #' @import data.table
 #' @import knitr
@@ -46,7 +40,6 @@ audit_report_html_global <- function(data,
   }
   if (!is.data.table(data)) {
     data <- as.data.table(data)
-    warning("The 'data' argument has been coerced to data.table.")
   }
   if (!is.null(na_threshold)) {
     if (!(is.numeric(na_threshold) & length(na_threshold) == 2)) {
@@ -82,6 +75,10 @@ audit_report_html_global <- function(data,
 #'   directory.
 #' @param output_file name of the output file. If NULL, the default then it is 'desc_report'.
 #'
+#' @examples
+#' data(iris)
+#' audit_report_html(iris, "iris.html")
+#'
 #' @import data.table
 #' @import knitr
 #' @importFrom magrittr "%>%"
@@ -101,7 +98,6 @@ audit_report_html <- function(data,
   }
   if (!is.data.table(data)) {
     data <- as.data.table(data)
-    warning("The 'data' argument has been coerced to data.table.")
   }
   
   names(data) <- make.names(names(data), unique = TRUE)
@@ -142,10 +138,10 @@ audit_report_html <- function(data,
 #'   
 #' @examples
 #' data(mtcars)
-#' report_data_quality(mtcars, file = "quality_mtcars.xlsx")
+#' audit_report_excel(mtcars, file = "mtcars.xlsx")
 #' 
 #' data(iris)
-#' report_data_quality(mtcars, file = "quality_iris.xlsx")
+#' audit_report_excel(mtcars, file = "iris.xlsx")
 #'
 #' @import openxlsx
 #'
