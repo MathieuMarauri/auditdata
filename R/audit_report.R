@@ -21,7 +21,7 @@
 #'
 #' @import data.table
 #' @import knitr
-#' @importFrom dplyr mutate "%>%"
+#' @importFrom magrittr "%>%"
 #' @importFrom formattable color_bar
 #' @importFrom kableExtra kable_styling cell_spec
 #' @importFrom rmarkdown render
