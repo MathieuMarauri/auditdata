@@ -8,7 +8,7 @@ params:
 title: "Data quality"
 output:
   html_document:
-    keep_md: yes
+    keep_md: no
     toc: yes
     toc_float: yes
     highlight: tango

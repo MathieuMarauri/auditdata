@@ -15,6 +15,16 @@
 #' @param order logical, whether to order the columns and rows to display the missing
 #'   values next to each other, defautl to FALSE.
 #'
+#' @examples
+#' data(iris)
+#' res <- data_quality(iris)
+#' # global quality
+#' res$global
+#' # numerical data summary
+#' res$numeric_output
+#' # categorical data summary
+#' res$categorical_output
+#'
 #' @import data.table
 #' @import knitr
 #' @importFrom dplyr mutate "%>%"
