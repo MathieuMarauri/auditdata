@@ -17,8 +17,10 @@ Imports:
   ggplot2 (>= 3.2.1),
   kableExtra (>= 1.1.0),
   knitr (>= 1.26),
+  lubridate (>= 1.7.1),
   magrittr (>= 1.5),
   matrixStats (>= 0.51.0),
   openxlsx (>= 4.0.0),
-  rmarkdown (>= 2.0)
+  rmarkdown (>= 2.0),
+  stringi (>= 1.4.5)
 BugReports: https://github.com/MathieuMarauri/auditdata/issues

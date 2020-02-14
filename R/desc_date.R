@@ -11,6 +11,7 @@
 #'
 #' @import data.table
 #' @import ggplot2
+#' @importFrom stringi stri_trans_totitle
 #'
 plot_freq_date_group <- function(x, group, title = TRUE) {
   # # check argument
@@ -138,6 +139,7 @@ plot_freq_date <- function(x) {
 #'
 #' @import data.table
 #' @import ggplot2
+#' @importFrom lubridate date
 #'
 plot_missing_date <- function(x) {
   # check argument
