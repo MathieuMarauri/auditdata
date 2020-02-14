@@ -97,9 +97,7 @@ audit_report_html <- function(data,
   names(data) <- make.names(names(data), unique = TRUE)
   
   rmarkdown::render(
-    input = system.file("rmarkdown/templates/desc_report.Rmd",
-                        package = "explorer"
-    ),
+    input = system.file("rmarkdown/templates/desc_report.Rmd", package = "auditdata"),
     output_dir = output_dir,
     output_file = output_file,
     envir = new.env(),
