@@ -51,9 +51,9 @@ If quality_res is provided, data, numeric_cutoff, na_type and max_length are ign
 }
 \examples{
 data(mtcars)
-report_data_quality(mtcars, file = "quality_mtcars.xlsx")
+audit_report_excel(mtcars, file = "mtcars.xlsx")
 
 data(iris)
-report_data_quality(mtcars, file = "quality_iris.xlsx")
+audit_report_excel(mtcars, file = "iris.xlsx")
 
 }

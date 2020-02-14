@@ -36,3 +36,8 @@ values next to each other, defautl to FALSE.}
 \description{
 This function renders the data quality rmarkdown document with specific parameters.
 }
+\examples{
+data(iris)
+audit_report_html_global(iris, "iris.html")
+
+}
