@@ -8,6 +8,8 @@
 #' @param output_file name of the output file. If NULL, the default then it is
 #'   'quality_report'.
 #' @param na_type a character vector of strings that will be interpreted as NA
+#' @param numeric_cutoff the minimum number of distinct values required for a numeric
+#'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
 #' @param na_threshold numeric vector defining the range of values for the percentage of
 #'   missing values to be colored green, orange and red. Default to green before 40
 #'   percent, orange between 40 and 80 and red over 80 percent. If NULL then no colors are
@@ -65,10 +67,9 @@ audit_report_html_global <- function(data,
 #' specific parameters.
 #'
 #' @param data the dataset to analyse
-#' @param min_unique the minimal number of unique values for a numeric vector to be
-#'   describe as a numeric vector and not as a categorical vector. Defaults to 15.
-#' @param length_out number of unique values displayed in the plots and table for
-#'   categorical vectors. Defaults to 15.
+#' @param numeric_cutoff the minimum number of distinct values required for a numeric
+#'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
+#' @param max_length the maximum number of rows in the frequency tables. Default to 15.
 #' @param nchar maximum number of characters displayed in the plots as level values for
 #'   categorical vectors. See details.
 #' @param output_dir the directory to write the output file to, default to the current

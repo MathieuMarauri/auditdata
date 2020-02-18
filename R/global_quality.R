@@ -28,22 +28,25 @@
 
 
 #'
-#' This function analyzes the data quality of a table. It gives the dimensions of the
-#' table along with the number of unique values and missing values/ It also outputs a
-#' table with the number of unique values, the type and the percentage of missing values
-#' by variable.
+#' This function analyzes the data quality of a table. It gives the dimensions of the table along
+#' with the number of unique values and missing values/ It also outputs a table with the number of
+#' unique values, the type and the percentage of missing values by variable.
 #'
 #' @param data the table to analyzed
-#' @param numeric_cutoff an integer specifying the minimal number of unique values
-#'   necessary for a vector not to be considered a factor. Default to -1
+#' @param numeric_cutoff an integer specifying the minimal number of unique values necessary for a
+#'   vector not to be considered a factor. Default to -1
 #' @param na_type a character vector of strings that will be interpreted as NA
+#' @param return a list with two elements, one with global information (dimensions, unique values
+#'   and missing values) and a table with information for each variable.
 #'
-#' @param return a list with two elements, one with global information (dimensions, unique
-#'   values and missing values) and a table with information for each variable.
+#' @return a list of length 2, first element is a list containing the number of rows, columns,
+#'   unique values and missing and the second one is a table containing information on each variable
+#'   (type, unique values, missing).
 #'
 #' @import data.table
 #'
 #' @export
+#' 
 audit_global <- function(data, numeric_cutoff = -1, na_type = NULL) {
   # Arguments check
   if (!is.data.frame(data) & !is.data.table(data)) {

@@ -25,6 +25,9 @@ directory.}
 
 \item{na_type}{a character vector of strings that will be interpreted as NA}
 
+\item{numeric_cutoff}{the minimum number of distinct values required for a numeric
+vector not to be coerced to a fator. -1 is the default, meaning no minimum required.}
+
 \item{na_threshold}{numeric vector defining the range of values for the percentage of
 missing values to be colored green, orange and red. Default to green before 40
 percent, orange between 40 and 80 and red over 80 percent. If NULL then no colors are

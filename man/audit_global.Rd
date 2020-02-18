@@ -2,27 +2,30 @@
 % Please edit documentation in R/global_quality.R
 \name{audit_global}
 \alias{audit_global}
-\title{This function analyzes the data quality of a table. It gives the dimensions of the
-table along with the number of unique values and missing values/ It also outputs a
-table with the number of unique values, the type and the percentage of missing values
-by variable.}
+\title{This function analyzes the data quality of a table. It gives the dimensions of the table along
+with the number of unique values and missing values/ It also outputs a table with the number of
+unique values, the type and the percentage of missing values by variable.}
 \usage{
 audit_global(data, numeric_cutoff = -1, na_type = NULL)
 }
 \arguments{
 \item{data}{the table to analyzed}
 
-\item{numeric_cutoff}{an integer specifying the minimal number of unique values
-necessary for a vector not to be considered a factor. Default to -1}
+\item{numeric_cutoff}{an integer specifying the minimal number of unique values necessary for a
+vector not to be considered a factor. Default to -1}
 
 \item{na_type}{a character vector of strings that will be interpreted as NA}
 
-\item{return}{a list with two elements, one with global information (dimensions, unique
-values and missing values) and a table with information for each variable.}
+\item{return}{a list with two elements, one with global information (dimensions, unique values
+and missing values) and a table with information for each variable.}
+}
+\value{
+a list of length 2, first element is a list containing the number of rows, columns,
+  unique values and missing and the second one is a table containing information on each variable
+  (type, unique values, missing).
 }
 \description{
-This function analyzes the data quality of a table. It gives the dimensions of the
-table along with the number of unique values and missing values/ It also outputs a
-table with the number of unique values, the type and the percentage of missing values
-by variable.
+This function analyzes the data quality of a table. It gives the dimensions of the table along
+with the number of unique values and missing values/ It also outputs a table with the number of
+unique values, the type and the percentage of missing values by variable.
 }

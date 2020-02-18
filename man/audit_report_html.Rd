@@ -17,6 +17,11 @@ audit_report_html(
 \arguments{
 \item{data}{the dataset to analyse}
 
+\item{numeric_cutoff}{the minimum number of distinct values required for a numeric
+vector not to be coerced to a fator. -1 is the default, meaning no minimum required.}
+
+\item{max_length}{the maximum number of rows in the frequency tables. Default to 15.}
+
 \item{nchar}{maximum number of characters displayed in the plots as level values for
 categorical vectors. See details.}
 
@@ -24,12 +29,6 @@ categorical vectors. See details.}
 directory.}
 
 \item{output_file}{name of the output file. If NULL, the default then it is 'desc_report'.}
-
-\item{min_unique}{the minimal number of unique values for a numeric vector to be
-describe as a numeric vector and not as a categorical vector. Defaults to 15.}
-
-\item{length_out}{number of unique values displayed in the plots and table for
-categorical vectors. Defaults to 15.}
 }
 \description{
 This function renders the univariate exploratory analysis rmardown document with
