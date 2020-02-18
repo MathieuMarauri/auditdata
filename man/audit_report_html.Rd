@@ -35,7 +35,9 @@ This function renders the univariate exploratory analysis rmardown document with
 specific parameters.
 }
 \examples{
+\donttest{
 data(iris)
 audit_report_html(iris, "iris.html")
+}
 
 }

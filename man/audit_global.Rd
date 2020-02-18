@@ -15,9 +15,6 @@ audit_global(data, numeric_cutoff = -1, na_type = NULL)
 vector not to be considered a factor. Default to -1}
 
 \item{na_type}{a character vector of strings that will be interpreted as NA}
-
-\item{return}{a list with two elements, one with global information (dimensions, unique values
-and missing values) and a table with information for each variable.}
 }
 \value{
 a list of length 2, first element is a list containing the number of rows, columns,

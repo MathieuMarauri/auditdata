@@ -18,8 +18,10 @@
 #'   values next to each other, defautl to FALSE.
 #'
 #' @examples
+#' \donttest{
 #' data(iris)
 #' audit_report_html_global(iris, "iris.html")
+#' }
 #'
 #' @import data.table
 #' @import knitr
@@ -77,8 +79,10 @@ audit_report_html_global <- function(data,
 #' @param output_file name of the output file. If NULL, the default then it is 'desc_report'.
 #'
 #' @examples
+#' \donttest{
 #' data(iris)
 #' audit_report_html(iris, "iris.html")
+#' }
 #'
 #' @import data.table
 #' @import knitr

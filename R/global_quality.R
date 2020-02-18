@@ -36,8 +36,6 @@
 #' @param numeric_cutoff an integer specifying the minimal number of unique values necessary for a
 #'   vector not to be considered a factor. Default to -1
 #' @param na_type a character vector of strings that will be interpreted as NA
-#' @param return a list with two elements, one with global information (dimensions, unique values
-#'   and missing values) and a table with information for each variable.
 #'
 #' @return a list of length 2, first element is a list containing the number of rows, columns,
 #'   unique values and missing and the second one is a table containing information on each variable
