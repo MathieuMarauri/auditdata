@@ -54,7 +54,7 @@ audit_report_html_global <- function(data,
   }
   
   rmarkdown::render(
-    input = system.file("rmarkdown/templates/quality_report.Rmd", package = "auditdata"),
+    input = system.file("rmarkdown/templates/audit_report_global.Rmd", package = "auditdata"),
     output_file = output_file,
     output_dir = output_dir,
     envir = new.env(),
@@ -108,7 +108,7 @@ audit_report_html <- function(data,
   names(data) <- make.names(names(data), unique = TRUE)
   
   rmarkdown::render(
-    input = system.file("rmarkdown/templates/desc_report.Rmd", package = "auditdata"),
+    input = system.file("rmarkdown/templates/audit_report.Rmd", package = "auditdata"),
     output_dir = output_dir,
     output_file = output_file,
     envir = new.env(),
