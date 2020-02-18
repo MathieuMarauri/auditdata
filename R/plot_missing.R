@@ -65,6 +65,7 @@ audit_missing <- function(data, na_type = NULL, order = FALSE) {
   )
 
   # plot
+  row <- variable <- missing <- NULL # for CMD check
   ggplot(data = missing_data, mapping = aes(x = row, y = variable, fill = missing)) +
     geom_tile(show.legend = FALSE) +
     scale_fill_manual(values = c("TRUE" = "maroon", "FALSE" = "transparent")) +

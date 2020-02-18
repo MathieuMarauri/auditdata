@@ -56,6 +56,7 @@ audit_vector_categorical <- function(x, max_length = 15, nchar = 20, plot = TRUE
       substr(levels(freq_table$value), 0, nchar),
       ifelse(nchar(levels(freq_table$value)) > nchar, "...", "")
     )
+    value <- freq <- NULL # for CMD check
     graph <- ggplot(data = freq_table, mapping = aes(x = value, y = freq)) +
       geom_point() +
       geom_segment(mapping = aes(xend = value, yend = 0)) +
@@ -82,6 +83,7 @@ audit_vector_categorical <- function(x, max_length = 15, nchar = 20, plot = TRUE
       substr(levels(freq_table$value), 0, nchar),
       ifelse(nchar(levels(freq_table$value)) > nchar, "...", "")
     )
+    value <- freq <- percent <- NULL # for CMD check
     graph <- ggplot(
       data = freq_table,
       mapping = aes(x = 1, y = percent, fill = value, label = value)

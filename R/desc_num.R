@@ -17,6 +17,7 @@
 #'
 #' @import ggplot2
 #' @importFrom cowplot plot_grid
+#' @importFrom stats quantile
 #'
 audit_vector_numeric <- function(x, plot = TRUE) {
   # check argument
@@ -57,6 +58,7 @@ audit_vector_numeric <- function(x, plot = TRUE) {
   rownames(percentiles) <- c("Level", "Value")
   # plots
   # histogram
+  x <- NULL # for CMD check
   hist <- ggplot() +
     aes(x = x) +
     geom_density(fill = "grey30", alpha = .5) +
@@ -67,6 +69,7 @@ audit_vector_numeric <- function(x, plot = TRUE) {
       axis.ticks.x = element_blank()
     )
   # boxplot
+  x <- NULL # for CMD check
   boxplot <- ggplot() +
     aes(x = 1, y = x) +
     geom_boxplot() +
@@ -78,6 +81,7 @@ audit_vector_numeric <- function(x, plot = TRUE) {
     )
   # ecdf
   plot_data <- data.frame(x = x, y = ecdf(x)(x))
+  x <- y <- NULL # for CMD check
   ecdf <- ggplot(data = plot_data, mapping = aes(x = x, y = y)) +
     geom_line() +
     labs(

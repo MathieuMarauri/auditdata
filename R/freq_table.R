@@ -13,7 +13,7 @@
 #' @import data.table
 #'
 freq_table <- function(x, max_length = Inf, cum = FALSE) {
-  N <- NULL
+  N <- NULL # for CMD check
   result <- as.data.table(x)[, .N, by = x][
       order(-N),list(
         value = x,
@@ -21,7 +21,8 @@ freq_table <- function(x, max_length = Inf, cum = FALSE) {
         percent = round(100 * N / sum(N), digits = 0)
       )]
   if (cum) {
-    result <- result[, .(value, freq, percent, 
+    value <- freq <- percent <- NULL # for CMD check
+    result <- result[, list(value, freq, percent, 
                          cum_freq = cumsum(freq), 
                          cum_percent = cumsum(percent))]
   }

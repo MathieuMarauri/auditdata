@@ -33,7 +33,7 @@ plot_freq_date_group <- function(x, group, title = TRUE) {
     "year" = as.character(min_year:max_year)
   )
   # aggregate the data by group and count the number of records
-  plot_data <- data.table(date = format(x, date_pattern[group]))[, .(count = .N), by = date]
+  plot_data <- data.table(date = format(x, date_pattern[group]))[, list(count = .N), by = date]
   # merge x and complete sequence of hours to indicate missing dates
   plot_data <- merge(
     x = plot_data,
@@ -44,6 +44,7 @@ plot_freq_date_group <- function(x, group, title = TRUE) {
   # coerce to factor to properly order the graph
   plot_data$date <- factor(plot_data$date, levels = factor_levels[[group]], ordered = TRUE)
   # plot
+  date <- count <- NULL # for CMD check
   plot <- ggplot(data = plot_data[!is.na(count)], mapping = aes(x = date, y = count)) +
     geom_point() +
     geom_segment(mapping = aes(xend = date, yend = 0))
@@ -160,7 +161,8 @@ plot_missing_date <- function(x) {
   max_date <- max(x)
 
   # aggregate the data by day and count the number of records
-  plot_data <- data.table(date = lubridate::date(x))[, .(count = .N), by = date]
+  date <- NULL # for CMD check
+  plot_data <- data.table(date = lubridate::date(x))[, list(count = .N), by = date]
 
   # the limits of the sequence of dates (month or year)
   if (yearly & !monthly & !daily) {
@@ -200,6 +202,7 @@ plot_missing_date <- function(x) {
 
   # plot
   if (yearly) {
+    count <- count_shift <- group <- NULL # for CMD check
     plot_data[, count_shift := shift(count, 1)]
     plot_data[, group := ifelse(xor(is.na(count), is.na(count_shift)), 1, 0)]
     plot_data[, group := cumsum(group)]
@@ -223,6 +226,7 @@ plot_missing_date <- function(x) {
     plot_data$month <- factor(plot_data$month, levels = month.name, ordered = TRUE)
 
     # plot
+    month <- NULL # for CMD check
     plot <- ggplot(data = plot_data[!is.na(count)], mapping = aes(x = month, y = count, group = group)) +
       geom_point() +
       geom_segment(mapping = aes(xend = month, yend = 0))
@@ -264,6 +268,7 @@ plot_missing_date <- function(x) {
     )
 
     # plot
+    dow <- woy <- dom <- NULL # for CMD check
     plot <- ggplot(
       data = plot_data,
       mapping = aes(x = dow, y = -woy, fill = count, label = dom)
