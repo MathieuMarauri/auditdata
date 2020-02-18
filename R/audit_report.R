@@ -105,6 +105,15 @@ audit_report_html <- function(data,
     data <- as.data.table(data)
   }
   
+  if (is.null(output_file) & is.null(output_dir)) {
+    output_file <- "audit_report.html"
+    output_dir <- "."
+  } else if (is.null(output_dir)) {
+    output_dir <- stringi::stri_replace_first_regex("abd/fghjk/test.html", "(?<=/).[^/]*$", "") # still an extra /
+  } else if (is.null(output_file)) {
+    output_dir <- "audit_report.html"
+  }
+  
   names(data) <- make.names(names(data), unique = TRUE)
   
   rmarkdown::render(
