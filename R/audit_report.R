@@ -32,7 +32,7 @@
 #' 
 #' @export
 audit_report_html_global <- function(data,
-                                     output_dir = ".",
+                                     output_dir = NULL,
                                      output_file = NULL,
                                      na_type = NULL,
                                      numeric_cutoff = -1,
@@ -53,8 +53,18 @@ audit_report_html_global <- function(data,
     }
   }
   
+  if (is.null(output_file) & is.null(output_dir)) {
+    output_file <- "audit_report_global.html"
+    output_dir <- "."
+  } else if (is.null(output_dir)) {
+    output_dir <- stringi::stri_replace_first_regex(output_file, "(?<=/).[^/]*$", "") %>% 
+      stringi::stri_replace_first_regex("/$", "")
+  } else if (is.null(output_file)) {
+    output_file <- "audit_report_global.html"
+  }
+  
   rmarkdown::render(
-    input = system.file("rmarkdown/templates/quality_report.Rmd", package = "auditdata"),
+    input = system.file("rmarkdown/templates/audit_report_global.Rmd", package = "auditdata"),
     output_file = output_file,
     output_dir = output_dir,
     envir = new.env(),
@@ -89,13 +99,14 @@ audit_report_html_global <- function(data,
 #' @importFrom magrittr "%>%"
 #' @importFrom kableExtra kable_styling column_spec
 #' @importFrom rmarkdown render
+#' @importFrom stringi stri_replace_first_regex
 #' 
 #' @export
 audit_report_html <- function(data,
                               numeric_cutoff = -1,
                               max_length = 15,
                               nchar = 20,
-                              output_dir = ".",
+                              output_dir = NULL,
                               output_file = NULL) {
   # arguments check
   if (!is.data.frame(data) & !is.data.table(data)) {
@@ -105,10 +116,20 @@ audit_report_html <- function(data,
     data <- as.data.table(data)
   }
   
+  if (is.null(output_file) & is.null(output_dir)) {
+    output_file <- "audit_report.html"
+    output_dir <- "."
+  } else if (is.null(output_dir)) {
+    output_dir <- stringi::stri_replace_first_regex(output_file, "(?<=/).[^/]*$", "") %>% 
+      stringi::stri_replace_first_regex("/$", "")
+  } else if (is.null(output_file)) {
+    output_file <- "audit_report.html"
+  }
+  
   names(data) <- make.names(names(data), unique = TRUE)
   
   rmarkdown::render(
-    input = system.file("rmarkdown/templates/desc_report.Rmd", package = "auditdata"),
+    input = system.file("rmarkdown/templates/audit_report.Rmd", package = "auditdata"),
     output_dir = output_dir,
     output_file = output_file,
     envir = new.env(),
