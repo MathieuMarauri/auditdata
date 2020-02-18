@@ -33,7 +33,7 @@
 #' 
 #' @import data.table
 #' @export
-data_quality <- function(data, numeric_cutoff = -1, na_type = NA,
+data_quality <- function(data, numeric_cutoff = -1, na_type = NULL,
                          max_length = Inf, global_only = FALSE) {
   if (!is.data.frame(data)) {
     stop("'data' must be have data.frame class.")
@@ -51,18 +51,18 @@ data_quality <- function(data, numeric_cutoff = -1, na_type = NA,
   numeric_var <- names(types)[types == "numeric"]
   categorical_var <- names(types)[types == "categorical"]
   date_var <- names(types)[types == "date"]
-  result <- list(global = global_quality(
+  result <- list(global = audit_global(
     data = data,
     numeric_cutoff = numeric_cutoff,
     na_type = na_type
   ))
   if (!global_only) {
     if (length(numeric_var) > 0) {
-      numeric_output <- numeric_quality(data = data, numeric_var = numeric_var)
+      numeric_output <- audit_numeric(data = data, numeric_var = numeric_var)
       result <- append(result, list(numeric = numeric_output))
     }
     if (length(categorical_var) > 0) {
-      categorical_output <- categorical_quality(
+      categorical_output <- audit_categorical(
         data = data,
         categorical_var = categorical_var,
         max_length = max_length
@@ -70,7 +70,7 @@ data_quality <- function(data, numeric_cutoff = -1, na_type = NA,
       result <- append(result, list(categorical = categorical_output))
     }
     if (length(date_var) > 0) {
-      date_output <- date_quality(
+      date_output <- audit_date(
         data = data,
         date_var = date_var,
         max_length = max_length

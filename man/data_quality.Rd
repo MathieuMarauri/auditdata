@@ -7,7 +7,7 @@
 data_quality(
   data,
   numeric_cutoff = -1,
-  na_type = NA,
+  na_type = NULL,
   max_length = Inf,
   global_only = FALSE
 )

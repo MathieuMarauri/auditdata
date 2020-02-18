@@ -1,5 +1,123 @@
 
 #'
+#' This function renders the data quality rmarkdown document with specific parameters.
+#'
+#' @param data the dataset to analyse
+#' @param output_dir the directory to write the output file to, default to the current
+#'   directory.
+#' @param output_file name of the output file. If NULL, the default then it is
+#'   'quality_report'.
+#' @param na_type a character vector of strings that will be interpreted as NA
+#' @param numeric_cutoff the minimum number of distinct values required for a numeric
+#'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
+#' @param na_threshold numeric vector defining the range of values for the percentage of
+#'   missing values to be colored green, orange and red. Default to green before 40
+#'   percent, orange between 40 and 80 and red over 80 percent. If NULL then no colors are
+#'   applied
+#' @param order logical, whether to order the columns and rows to display the missing
+#'   values next to each other, defautl to FALSE.
+#'
+#' @examples
+#' \donttest{
+#' data(iris)
+#' audit_report_html_global(iris, "iris.html")
+#' }
+#'
+#' @import data.table
+#' @import knitr
+#' @importFrom magrittr "%>%"
+#' @importFrom formattable color_bar
+#' @importFrom kableExtra kable_styling cell_spec
+#' @importFrom rmarkdown render
+#' 
+#' @export
+audit_report_html_global <- function(data,
+                                     output_dir = ".",
+                                     output_file = NULL,
+                                     na_type = NULL,
+                                     numeric_cutoff = -1,
+                                     na_threshold = c(40, 80),
+                                     order = FALSE) {
+  # arguments check
+  if (!is.data.frame(data) & !is.data.table(data)) {
+    stop("'data' must either be a data.frame or a data.table.")
+  }
+  if (!is.data.table(data)) {
+    data <- as.data.table(data)
+  }
+  if (!is.null(na_threshold)) {
+    if (!(is.numeric(na_threshold) & length(na_threshold) == 2)) {
+      stop("'na_threshold' must be numeric of length 2.")
+    } else if (na_threshold[1] >= na_threshold[2]) {
+      stop("The first element of 'na_threshold' should be lower than the second one.")
+    }
+  }
+  
+  rmarkdown::render(
+    input = system.file("rmarkdown/templates/quality_report.Rmd", package = "auditdata"),
+    output_file = output_file,
+    output_dir = output_dir,
+    envir = new.env(),
+    params = list(data = data, na_type = na_type, numeric_cutoff = numeric_cutoff, na_threshold = na_threshold, order = order)
+  )
+}
+
+
+#'
+#'
+#' This function renders the univariate exploratory analysis rmardown document with
+#' specific parameters.
+#'
+#' @param data the dataset to analyse
+#' @param numeric_cutoff the minimum number of distinct values required for a numeric
+#'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
+#' @param max_length the maximum number of rows in the frequency tables. Default to 15.
+#' @param nchar maximum number of characters displayed in the plots as level values for
+#'   categorical vectors. See details.
+#' @param output_dir the directory to write the output file to, default to the current
+#'   directory.
+#' @param output_file name of the output file. If NULL, the default then it is 'desc_report'.
+#'
+#' @examples
+#' \donttest{
+#' data(iris)
+#' audit_report_html(iris, "iris.html")
+#' }
+#'
+#' @import data.table
+#' @import knitr
+#' @importFrom magrittr "%>%"
+#' @importFrom kableExtra kable_styling column_spec
+#' @importFrom rmarkdown render
+#' 
+#' @export
+audit_report_html <- function(data,
+                              numeric_cutoff = -1,
+                              max_length = 15,
+                              nchar = 20,
+                              output_dir = ".",
+                              output_file = NULL) {
+  # arguments check
+  if (!is.data.frame(data) & !is.data.table(data)) {
+    stop("'data' must either be a data.frame or a data.table.")
+  }
+  if (!is.data.table(data)) {
+    data <- as.data.table(data)
+  }
+  
+  names(data) <- make.names(names(data), unique = TRUE)
+  
+  rmarkdown::render(
+    input = system.file("rmarkdown/templates/desc_report.Rmd", package = "auditdata"),
+    output_dir = output_dir,
+    output_file = output_file,
+    envir = new.env(),
+    params = list(data = data, numeric_cutoff = numeric_cutoff, max_length = max_length, nchar = nchar)
+  )
+}
+
+
+#'
 #' Performs a quality audit of a table
 #'
 #' This function builds an excel report based on the result of a quality check. It renders
@@ -25,16 +143,16 @@
 #'   
 #' @examples
 #' data(mtcars)
-#' report_data_quality(mtcars, file = "quality_mtcars.xlsx")
+#' audit_report_excel(mtcars, file = "mtcars.xlsx")
 #' 
 #' data(iris)
-#' report_data_quality(mtcars, file = "quality_iris.xlsx")
+#' audit_report_excel(mtcars, file = "iris.xlsx")
 #'
 #' @import openxlsx
 #'
 #' @export
-report_data_quality <- function(data = NULL, quality_res = NULL, file = NULL, numeric_cutoff = -1, na_type = NA, 
-                                max_length = Inf, global_only = FALSE, na_threshold = c(40, 80), verbose = TRUE) {
+audit_report_excel <- function(data = NULL, quality_res = NULL, file = NULL, numeric_cutoff = -1, na_type = NULL, 
+                               max_length = Inf, global_only = FALSE, na_threshold = c(40, 80), verbose = TRUE) {
   if (is.null(data) & is.null(quality_res)) {
     stop("One of data and quality_res should be provided.")
   }
@@ -75,10 +193,10 @@ report_data_quality <- function(data = NULL, quality_res = NULL, file = NULL, nu
       global_only = global_only
     )
   }
-  output_global <- quality_res$global$global
-  n_cols <- quality_res$global$dim["ncol"]
-  n_rows <- quality_res$global$dim["nrow"]
-  n_unique <- quality_res$global$dim["unique"]
+  output_global <- quality_res$global$table
+  n_cols <- quality_res$global$global$n_cols
+  n_rows <- quality_res$global$global$n_rows
+  n_unique <- quality_res$global$global$n_unique
   
   
   workbook <- createWorkbook()
