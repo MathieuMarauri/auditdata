@@ -95,13 +95,13 @@ audit_global <- function(data, numeric_cutoff = -1, na_type = NULL) {
   output_global <- data.table(
     names(n_miss),
     types,
+    n_unique_values,
     n_miss,
-    as.numeric(format(percent_miss, digits = 0)),
-    n_unique_values
+    as.numeric(format(percent_miss, digits = 0))
   )
   colnames(output_global) <- c(
-    "Variable", "Type", "Missing values",
-    "Percentage of missing values", "Unique values"
+    "Variable", "Type", "Unique values", "Missing values",
+    "Percentage of missing values"
   )
   return(list(
     global = list(

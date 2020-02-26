@@ -36,26 +36,20 @@ The table has `r quality_info$n_cols` columns and `r quality_info$n_rows` rows (
 
 ```{r quality_table_formating}
 if (!is.null(params$na_threshold)) {
-  quality_output$`Missing values` <- ifelse(
-    quality_output$`Percentage of missing values` <= params$na_threshold[1],
-    cell_spec(quality_output$`Missing values`, format = "html", color = "green"),
-    ifelse(
-      quality_output$`Percentage of missing values` > params$na_threshold[2],
-      cell_spec(quality_output$`Missing values`, format = "html", color = "red"),
-      cell_spec(quality_output$`Missing values`, format = "html", color = "orange")
-    )
-  )
   quality_output$percent <- quality_output$`Percentage of missing values`
-  quality_output$`Percentage of missing values` <- ifelse(
-    quality_output$`Percentage of missing values` <= params$na_threshold[1],
-    cell_spec(quality_output$`Percentage of missing values`, format = "html", color = "green"),
-    ifelse(
-      quality_output$`Percentage of missing values` > params$na_threshold[2],
-      cell_spec(quality_output$`Percentage of missing values`, format = "html", color = "red"),
-      cell_spec(quality_output$`Percentage of missing values`, format = "html", color = "orange")
-    )
-  )
-  quality_output$`Percentage of missing values` <- color_bar("lightblue", fun = function(x) x / 100)(quality_output$percent)
+  quality_output$`Percentage of missing values` <- color_bar(
+    color = ifelse(
+      quality_output$percent <= params$na_threshold[1],
+      "lightgreen",
+       ifelse(
+         quality_output$percent > params$na_threshold[2],
+         "indianred",
+         "orange"
+         )
+      ),
+      fun = function(x) x / max(x)
+    )(quality_output$percent)
+  quality_output$percent <- NULL
 }
 ```
 
