@@ -10,7 +10,7 @@ audit_report_html(
   numeric_cutoff = -1,
   max_length = 15,
   nchar = 20,
-  output_dir = ".",
+  output_dir = NULL,
   output_file = NULL
 )
 }

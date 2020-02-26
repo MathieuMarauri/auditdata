@@ -6,7 +6,7 @@
 \usage{
 audit_report_html_global(
   data,
-  output_dir = ".",
+  output_dir = NULL,
   output_file = NULL,
   na_type = NULL,
   numeric_cutoff = -1,

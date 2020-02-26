@@ -37,7 +37,17 @@ if (is_date(x)) {
 ```
 
 
-```{r desc_{{i}}_plot, , fig.align = 'center', dpi = 300, out.width = '100%', fig.height = 4, fig.width = 10}
+```{r def_height_plot_{{i}}}
+if (is_numeric(x, numeric_cutoff = numeric_cutoff)) {
+  height <- 6
+} else {
+  height <- 4
+}
+```
+
+
+
+```{r desc_{{i}}_plot, , fig.align = 'center', dpi = 300, out.width = '100%', fig.height = height, fig.width = 10}
 if (is_date(x)) {
   print(description$missing_plot)
   print(description$freq_plot)

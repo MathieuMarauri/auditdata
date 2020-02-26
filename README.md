@@ -1,14 +1,17 @@
 # auditdata
 
-__auditdata__ is an R package to perform a quality check on a table.
+<!-- badges: start -->
+  [![Travis build status](https://travis-ci.org/MathieuMarauri/auditdata.svg?branch=master)](https://travis-ci.org/MathieuMarauri/auditdata)
+  <!-- badges: end -->
+
+__auditdata__ is an R package to perform an audit on the quality of a table. 
 
 ### Installation
 
 You can install __auditdata__ from __github__ using the __devtools__ package : 
 
 ``` r
-require(devtools)
-install_github('MathieuMarauri/auditdata)
+devtools::install_github('MathieuMarauri/auditdata)
 ```
 
 <!--
@@ -21,26 +24,29 @@ Should you have other issues regarding __rJava__ installation please refer to [t
 
 ### Description
 
-The main function of this package, _qualityCheck_, computes the number of missing values by variable and, depending on the type of the variable, other data quality key indicators.
-
-Percenttiles are computed for numeric variables. For categorical variables a frequency table of the unique values is returned. 
-
-An excel report is rendered using the [__openxlsx__](https://cran.r-project.org/web/packages/openxlsx/openxlsx.pdf "Title") package. The styles are defined within the function, to modify the styles, edit the function and manually change it.
-
-Use `?qualityCheck` to see the documentation of the function.
-
----
+The main function of this package are `audit_report_html_global()`, `audit_report_html()` and `audit_report_excel()`. They produce a document (html or excel file) containing information about the table given in input. The number of rows, of columns, of unique values and missing values are given as global information. More details are given on inidividual columns depending on the type (numeric, categorical or date).
 
 ### Usage
 
 ``` r
 library("auditdata")
-# load your data
-qualityCheck(data)
+# Generation of fake data
+data <- data.frame(
+  cat1 = sample(month.name, 1000, replace = TRUE),
+  cat2 = sample(letters, 1000, replace = TRUE),
+  cat3 = sample(c("apple", "orange", "banana", "pear", "grapefruit", "cherry"), 1000, replace = TRUE),
+  num1 = runif(1000, 100, 150),
+  num2 = rnorm(1000, 37, 8),
+  num3 = rexp(1000, 2),
+  bool1 = sample(c(TRUE, FALSE), 1000, replace = TRUE),
+  date1 = seq(from = as.Date("2010-01-01"), to = as.Date("2017-01-01"), length.out = 1000),
+  date2 = seq(from = as.Date("2010-01-01"), to = as.Date("2017-01-01"), length.out = 1000)
+)
+while (sum(is.na(data) == TRUE) < (nrow(data) * ncol(data) * 10 / 100)) {
+  data[sample(nrow(data), 1), sample(ncol(data), 1)] <- NA
+}
+
+# Audit of the data
+audit_report_html_global(data)
+audit_report_html(data)
 ```
-
-This package is typically used before an analysis. After a table has been loaded into R, it may be necessary to perform a quality check on the data, namely to know the number of missing values by columns, the levels of categorical columns and their frequency ...
-
-The function _qualityCheck_ computes some indicators of the global quality of a dataset and produces an excel report with all the information. 
-
-
