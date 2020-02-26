@@ -97,7 +97,7 @@ audit_report_html_global <- function(data,
 #' @import data.table
 #' @import knitr
 #' @importFrom magrittr "%>%"
-#' @importFrom kableExtra kable_styling column_spec
+#' @importFrom kableExtra kable_styling column_spec scroll_box
 #' @importFrom rmarkdown render
 #' @importFrom stringi stri_replace_first_regex
 #' 
