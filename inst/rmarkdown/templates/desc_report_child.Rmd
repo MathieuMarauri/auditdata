@@ -31,7 +31,8 @@ if (is_date(x)) {
     kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center"))
   # freq_table
   print(kable(x = description$freq_table, format = 'html', escape = FALSE, digits = 2, format.args = list(decimal.mark = ".", big.mark = " ")) %>%
-    kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center"))
+    kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center")) %>% 
+    scroll_box(width = "100%", height = "200px")
 }
 ```
 
