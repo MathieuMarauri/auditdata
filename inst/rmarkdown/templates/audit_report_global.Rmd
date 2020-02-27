@@ -60,6 +60,28 @@ kable(x = quality_output, format = "html", escape = FALSE, digits = 2, format.ar
 
 ## Missing values
 
+<script>
+$(function(){
+  $('div.ordered').hide();// hide it initially
+  $('button').on('click', function(){
+     $('div.unordered, div.ordered').toggle();
+  });
+});
+</script>
+<button>Change</button>
+
+<div class="unordered">
+
 ```{r na_plot, fig.align = 'center', dpi = 300, out.width = '100%', fig.height = 6}
-audit_missing(data, na_type = params$na_type, order = params$order)
+audit_missing(data, na_type = params$na_type, order = FALSE)
 ```
+
+</div>
+
+<div class="ordered">
+
+```{r na_plot_order, fig.align = 'center', dpi = 300, out.width = '100%', fig.height = 6}
+audit_missing(data, na_type = params$na_type, order = TRUE)
+```
+
+</div>
