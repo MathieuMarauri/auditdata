@@ -25,6 +25,8 @@ audit_report(
 
 \item{output_file}{name of the output file. If NULL, the default then it is 'quality_report'.}
 
+\item{quality_res}{an object with class qualityResult obtained with \code{data_quality()}}
+
 \item{global_only}{logical, should only the global data quality be rendered?}
 
 \item{na_type}{a character vector of strings that will be interpreted as NA}
@@ -47,8 +49,6 @@ categorical vectors.}
 each other, defautl to FALSE.}
 
 \item{verbose}{logical, should information messages be printed in the console? default to TRUE.}
-
-\item{type}{the type of output to create, either html, excel or both.}
 }
 \description{
 This function creates a data quality report containing global information and optionnaly

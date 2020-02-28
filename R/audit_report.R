@@ -4,8 +4,8 @@
 #' univariate information. It can be either an html, an excel or both files.
 #' 
 #' @param data the dataset to analyse
-#' @param type the type of output to create, either html, excel or both.
 #' @param output_file name of the output file. If NULL, the default then it is 'quality_report'.
+#' @param quality_res an object with class qualityResult obtained with \code{data_quality()}
 #' @param global_only logical, should only the global data quality be rendered?
 #' @param na_type a character vector of strings that will be interpreted as NA
 #' @param output_dir the directory to write the output file to, default to the current directory.
@@ -64,7 +64,7 @@ audit_report <- function(data,
                       numeric_cutoff = numeric_cutoff, na_threshold = na_threshold, 
                       max_length = max_length, nchar = nchar, order = order, global_only = global_only)
   } else if (endsWith(output_file, ".xlsx")) {
-    audit_report_excel(data = data, quality_res = quality_res, file = output_file, numeric_cutoff = numeric_cutoff, na_type = na_type, 
+    audit_report_excel(data = data, quality_res = quality_res, output_file = output_file, numeric_cutoff = numeric_cutoff, na_type = na_type, 
                        max_length = max_length, global_only = global_only, na_threshold = na_threshold, verbose = verbose)
   } else {
     message("The 'output_file' provided did not end with .xlsx or .html")
