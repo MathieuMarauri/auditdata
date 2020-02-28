@@ -68,7 +68,7 @@ $(function(){
   });
 });
 </script>
-<button>Change</button>
+<button id = "but-change">Order/Unorder</button>
 
 <div class="unordered">
 
