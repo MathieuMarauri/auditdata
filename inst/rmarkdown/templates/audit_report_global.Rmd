@@ -5,6 +5,9 @@ params:
   numeric_cutoff: !r -1
   na_threshold: !r NULL
   order: !r FALSE
+  max_length: !r 15
+  nchar: !r 20
+  global_only: !r FALSE
 title: "Data quality"
 output:
   html_document:
@@ -30,7 +33,7 @@ quality_output <- data_quality$table
 ```
 
 
-## Global figures
+# Global figures
 
 The table has `r quality_info$n_cols` columns and `r quality_info$n_rows` rows (`r quality_info$n_unique` are unique). There are `r round(quality_info$n_missing / (quality_info$n_cols * quality_info$n_rows) * 100, digits = 0)`% missing values in the dataset.
 
@@ -58,7 +61,7 @@ kable(x = quality_output, format = "html", escape = FALSE, digits = 2, format.ar
   kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center")
 ```
 
-## Missing values
+# Missing values
 
 <script>
 $(function(){
@@ -85,3 +88,6 @@ audit_missing(data, na_type = params$na_type, order = TRUE)
 ```
 
 </div>
+
+```{r univ_explo, child='audit_report.Rmd', eval = !global_only}
+```

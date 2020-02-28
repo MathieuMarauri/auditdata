@@ -2,41 +2,56 @@
 % Please edit documentation in R/audit_report.R
 \name{audit_report_html}
 \alias{audit_report_html}
-\title{This function renders the univariate exploratory analysis rmardown document with
-specific parameters.}
+\title{This function creates the data quality html file with global data quality and optionnaly the
+univaraite exploratory analysis.}
 \usage{
 audit_report_html(
   data,
+  output_dir = NULL,
+  output_file = NULL,
+  na_type = NULL,
   numeric_cutoff = -1,
+  na_threshold = c(40, 80),
   max_length = 15,
   nchar = 20,
-  output_dir = NULL,
-  output_file = NULL
+  order = FALSE,
+  global_only = FALSE
 )
 }
 \arguments{
 \item{data}{the dataset to analyse}
 
-\item{numeric_cutoff}{the minimum number of distinct values required for a numeric
-vector not to be coerced to a fator. -1 is the default, meaning no minimum required.}
+\item{output_dir}{the directory to write the output file to, default to the current directory.}
+
+\item{output_file}{name of the output file. If NULL, the default then it is 'quality_report'.}
+
+\item{na_type}{a character vector of strings that will be interpreted as NA}
+
+\item{numeric_cutoff}{the minimum number of distinct values required for a numeric vector not to
+be coerced to a fator. -1 is the default, meaning no minimum required.}
+
+\item{na_threshold}{numeric vector defining the range of values for the percentage of missing
+values to be colored green, orange and red. Default to green before 40 percent, orange between
+40 and 80 and red over 80 percent. If NULL then no colors are applied}
 
 \item{max_length}{the maximum number of rows in the frequency tables. Default to 15.}
 
 \item{nchar}{maximum number of characters displayed in the plots as level values for
-categorical vectors. See details.}
+categorical vectors.}
 
-\item{output_dir}{the directory to write the output file to, default to the current
-directory.}
+\item{order}{logical, whether to order the columns and rows to display the missing values next to
+each other, defautl to FALSE.}
 
-\item{output_file}{name of the output file. If NULL, the default then it is 'desc_report'.}
+\item{global_only}{logical, should only the global data quality be rendered?}
 }
 \description{
-This function renders the univariate exploratory analysis rmardown document with
-specific parameters.
+This function creates the data quality html file with global data quality and optionnaly the
+univaraite exploratory analysis.
 }
 \examples{
 \donttest{
 data(iris)
+audit_report_html(iris, "iris.html", global_only = TRUE)
 audit_report_html(iris, "iris.html")
 }
 

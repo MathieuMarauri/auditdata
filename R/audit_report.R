@@ -1,26 +1,29 @@
 
 #'
-#' This function renders the data quality rmarkdown document with specific parameters.
+#' This function creates the data quality html file with global data quality and optionnaly the
+#' univaraite exploratory analysis.
 #'
 #' @param data the dataset to analyse
-#' @param output_dir the directory to write the output file to, default to the current
-#'   directory.
-#' @param output_file name of the output file. If NULL, the default then it is
-#'   'quality_report'.
+#' @param output_dir the directory to write the output file to, default to the current directory.
+#' @param output_file name of the output file. If NULL, the default then it is 'quality_report'.
 #' @param na_type a character vector of strings that will be interpreted as NA
-#' @param numeric_cutoff the minimum number of distinct values required for a numeric
-#'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
-#' @param na_threshold numeric vector defining the range of values for the percentage of
-#'   missing values to be colored green, orange and red. Default to green before 40
-#'   percent, orange between 40 and 80 and red over 80 percent. If NULL then no colors are
-#'   applied
-#' @param order logical, whether to order the columns and rows to display the missing
-#'   values next to each other, defautl to FALSE.
+#' @param numeric_cutoff the minimum number of distinct values required for a numeric vector not to
+#'   be coerced to a fator. -1 is the default, meaning no minimum required.
+#' @param na_threshold numeric vector defining the range of values for the percentage of missing
+#'   values to be colored green, orange and red. Default to green before 40 percent, orange between
+#'   40 and 80 and red over 80 percent. If NULL then no colors are applied
+#' @param max_length the maximum number of rows in the frequency tables. Default to 15.
+#' @param nchar maximum number of characters displayed in the plots as level values for
+#'   categorical vectors.
+#' @param order logical, whether to order the columns and rows to display the missing values next to
+#'   each other, defautl to FALSE.
+#' @param global_only logical, should only the global data quality be rendered?
 #'
 #' @examples
 #' \donttest{
 #' data(iris)
-#' audit_report_html_global(iris, "iris.html")
+#' audit_report_html(iris, "iris.html", global_only = TRUE)
+#' audit_report_html(iris, "iris.html")
 #' }
 #'
 #' @import data.table
@@ -29,15 +32,18 @@
 #' @importFrom formattable color_bar
 #' @importFrom kableExtra kable_styling cell_spec
 #' @importFrom rmarkdown render
-#' 
+#'
 #' @export
-audit_report_html_global <- function(data,
-                                     output_dir = NULL,
-                                     output_file = NULL,
-                                     na_type = NULL,
-                                     numeric_cutoff = -1,
-                                     na_threshold = c(40, 80),
-                                     order = FALSE) {
+audit_report_html <- function(data,
+                              output_dir = NULL,
+                              output_file = NULL,
+                              na_type = NULL,
+                              numeric_cutoff = -1,
+                              na_threshold = c(40, 80),
+                              max_length = 15,
+                              nchar = 20,
+                              order = FALSE,
+                              global_only = FALSE) {
   # arguments check
   if (!is.data.frame(data) & !is.data.table(data)) {
     stop("'data' must either be a data.frame or a data.table.")
@@ -68,72 +74,8 @@ audit_report_html_global <- function(data,
     output_file = output_file,
     output_dir = output_dir,
     envir = new.env(),
-    params = list(data = data, na_type = na_type, numeric_cutoff = numeric_cutoff, na_threshold = na_threshold, order = order)
-  )
-}
-
-
-#'
-#'
-#' This function renders the univariate exploratory analysis rmardown document with
-#' specific parameters.
-#'
-#' @param data the dataset to analyse
-#' @param numeric_cutoff the minimum number of distinct values required for a numeric
-#'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
-#' @param max_length the maximum number of rows in the frequency tables. Default to 15.
-#' @param nchar maximum number of characters displayed in the plots as level values for
-#'   categorical vectors. See details.
-#' @param output_dir the directory to write the output file to, default to the current
-#'   directory.
-#' @param output_file name of the output file. If NULL, the default then it is 'desc_report'.
-#'
-#' @examples
-#' \donttest{
-#' data(iris)
-#' audit_report_html(iris, "iris.html")
-#' }
-#'
-#' @import data.table
-#' @import knitr
-#' @importFrom magrittr "%>%"
-#' @importFrom kableExtra kable_styling column_spec scroll_box
-#' @importFrom rmarkdown render
-#' @importFrom stringi stri_replace_first_regex
-#' 
-#' @export
-audit_report_html <- function(data,
-                              numeric_cutoff = -1,
-                              max_length = 15,
-                              nchar = 20,
-                              output_dir = NULL,
-                              output_file = NULL) {
-  # arguments check
-  if (!is.data.frame(data) & !is.data.table(data)) {
-    stop("'data' must either be a data.frame or a data.table.")
-  }
-  if (!is.data.table(data)) {
-    data <- as.data.table(data)
-  }
-  
-  if (is.null(output_file) & is.null(output_dir)) {
-    output_file <- "audit_report.html"
-    output_dir <- "."
-  } else if (is.null(output_dir)) {
-    output_dir <- stringi::stri_replace_first_regex(output_file, "(?<=/).[^/]*$", "") %>% 
-      stringi::stri_replace_first_regex("/$", "")
-  } else if (is.null(output_file)) {
-    output_file <- "audit_report.html"
-  }
-  
-  names(data) <- make.names(names(data), unique = TRUE)
-  
-  rmarkdown::render(
-    input = system.file("rmarkdown/templates/audit_report.Rmd", package = "auditdata"),
-    output_dir = output_dir,
-    output_file = output_file,
-    envir = new.env(),
-    params = list(data = data, numeric_cutoff = numeric_cutoff, max_length = max_length, nchar = nchar)
+    params = list(data = data, na_type = na_type, numeric_cutoff = numeric_cutoff, na_threshold = na_threshold, 
+                  max_length = max_length, nchar = nchar, order = order, global_only = global_only)
   )
 }
 
