@@ -7,7 +7,7 @@
 audit_report_excel(
   data = NULL,
   quality_res = NULL,
-  file = NULL,
+  output_file = NULL,
   numeric_cutoff = -1,
   na_type = NULL,
   max_length = Inf,
@@ -21,7 +21,7 @@ audit_report_excel(
 
 \item{quality_res}{an object with class qualityResult obtained with \code{data_quality()}}
 
-\item{file}{output file name}
+\item{output_file}{output file name}
 
 \item{numeric_cutoff}{the minimum number of distinct values required for a numeric
 vector not to be coerced to a fator. -1 is the default, meaning no minimum required.}
@@ -51,9 +51,9 @@ If quality_res is provided, data, numeric_cutoff, na_type and max_length are ign
 }
 \examples{
 data(mtcars)
-audit_report_excel(mtcars, file = "mtcars.xlsx")
+audit_report_excel(mtcars, output_file = "mtcars.xlsx")
 
 data(iris)
-audit_report_excel(mtcars, file = "iris.xlsx")
+audit_report_excel(mtcars, output_file = "iris.xlsx")
 
 }
