@@ -19,7 +19,7 @@ test_that(
     x <- seq(as.Date("1910/1/1"), as.Date("1999/1/1"), "years")
     expect_equal(which_type(x), "date")
     
-    x <- seq(from = now, length.out = 100, by = "mins")
+    x <- seq(from = Sys.time(), length.out = 100, by = "mins")
     expect_equal(which_type(x), "date")
   }
 )
