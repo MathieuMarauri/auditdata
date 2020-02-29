@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
   [![Travis build status](https://travis-ci.org/MathieuMarauri/auditdata.svg?branch=master)](https://travis-ci.org/MathieuMarauri/auditdata)
+  [![Coverage Status](https://img.shields.io/codecov/c/github/MathieuMarauri/auditdata/master.svg)](https://codecov.io/github/MathieuMarauri/auditdata?branch=master)
   <!-- badges: end -->
 
 __auditdata__ is an R package to perform an audit on the quality of a table. 
