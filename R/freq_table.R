@@ -3,7 +3,7 @@
 #'
 #' This function creates a frequency table limited to 'max_length' rows.
 #'
-#' @param x the table containing the data,
+#' @param x a vector
 #' @param max_length the maximum number of rows in the output.
 #' @param cum shoulb cumulative frequencies and percentages be given? Default to FALSE
 #'

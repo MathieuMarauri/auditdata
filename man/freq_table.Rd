@@ -7,7 +7,7 @@
 freq_table(x, max_length = Inf, cum = FALSE)
 }
 \arguments{
-\item{x}{the table containing the data,}
+\item{x}{a vector}
 
 \item{max_length}{the maximum number of rows in the output.}
 
