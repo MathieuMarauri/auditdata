@@ -25,3 +25,5 @@ Imports:
   stringi (>= 1.4.5)
 SystemRequirements: pandoc (>= 1.12.3) - http://pandoc.org
 BugReports: https://github.com/MathieuMarauri/auditdata/issues
+Suggests: 
+    testthat

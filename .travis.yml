@@ -4,3 +4,6 @@ language: R
 cache: packages
 
 pandoc_version: 2.3.1
+
+after_success:
+  - Rscript -e 'covr::codecov()'
