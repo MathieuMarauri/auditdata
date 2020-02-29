@@ -5,7 +5,7 @@ test_that(
     expect_equal(which_type(x), "numeric")
     
     x <- c(rep(10, 3), rep(4.7, 7))
-    expect_equal(which_type(x), "categorical")
+    expect_equal(which_type(x, numeric_cutoff = 5), "categorical")
     
     x <- factor(rep(letters, 3))
     expect_equal(which_type(x), "categorical")
