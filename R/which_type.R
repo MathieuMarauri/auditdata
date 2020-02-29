@@ -44,8 +44,8 @@ is_date <- function(x) inherits(x, "Date") | inherits(x, "POSIXct") | inherits(x
 #'
 which_type <- function(x, numeric_cutoff = -1) {
   result <- "undefined"
-  if (is_categorical(x)) result <- "categorical"
+  if (is_categorical(x, numeric_cutoff = numeric_cutoff)) result <- "categorical"
   if (is_date(x)) result <- "date"
-  if (is_numeric(x, numeric_cutoff)) result <- "numeric"
+  if (is_numeric(x, numeric_cutoff = numeric_cutoff)) result <- "numeric"
   return(result)
 }
