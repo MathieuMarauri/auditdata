@@ -10,7 +10,7 @@ audit_vector_categorical(x, max_length = 15, nchar = 20, plot = TRUE)
 \arguments{
 \item{x}{a character vector}
 
-\item{max_length}{the maximum number of different values to display in the freqeuncy
+\item{max_length}{the maximum number of different values to display in the frequency
 table and the frequency plot}
 
 \item{nchar}{the maximum number of characters to display for each value in the plot}
