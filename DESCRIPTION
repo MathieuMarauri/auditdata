@@ -26,4 +26,5 @@ Imports:
 SystemRequirements: pandoc (>= 1.12.3) - http://pandoc.org
 BugReports: https://github.com/MathieuMarauri/auditdata/issues
 Suggests: 
-    testthat
+    testthat,
+    covr
