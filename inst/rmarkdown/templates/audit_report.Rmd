@@ -1,26 +1,5 @@
----
-params: 
-  data: NULL
-  numeric_cutoff: !r -1
-  max_length: !r 15
-  nchar: !r 20
-title: "Univariate exploratory analysis"
-output:
-  html_document:
-    keep_md: no
-    toc: yes
-    toc_float: yes
-    highlight: tango
-    theme: readable
----
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(include = TRUE, echo = FALSE, eval = TRUE)
-```
-
-```{r import_data}
-data <- params$data
-```
+# Univariate exploratory analysis
 
 ```{r describe_parameters}
 data <- params$data

@@ -5,3 +5,4 @@
 ^LICENSE\.md$
 ^test/.+$
 ^\.travis\.yml$
+^codecov\.yml$

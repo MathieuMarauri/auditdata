@@ -4,7 +4,7 @@
 #' statistics and plots the frequency table.
 #'
 #' @param x a character vector
-#' @param max_length the maximum number of different values to display in the freqeuncy
+#' @param max_length the maximum number of different values to display in the frequency
 #'   table and the frequency plot
 #' @param nchar the maximum number of characters to display for each value in the plot
 #' @param plot logical, whether to plot the graph. Defaults to TRUE.

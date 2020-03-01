@@ -1,43 +1,123 @@
 
 #'
-#' This function renders the data quality rmarkdown document with specific parameters.
-#'
+#' This function creates a data quality report containing global information and optionnaly
+#' univariate information. It can be either an html, an excel or both files.
+#' 
 #' @param data the dataset to analyse
-#' @param output_dir the directory to write the output file to, default to the current
-#'   directory.
-#' @param output_file name of the output file. If NULL, the default then it is
-#'   'quality_report'.
+#' @param output_file name of the output file. If NULL, the default then it is 'quality_report'.
+#' @param quality_res an object with class qualityResult obtained with \code{data_quality()}
+#' @param global_only logical, should only the global data quality be rendered?
 #' @param na_type a character vector of strings that will be interpreted as NA
-#' @param numeric_cutoff the minimum number of distinct values required for a numeric
-#'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
-#' @param na_threshold numeric vector defining the range of values for the percentage of
-#'   missing values to be colored green, orange and red. Default to green before 40
-#'   percent, orange between 40 and 80 and red over 80 percent. If NULL then no colors are
-#'   applied
-#' @param order logical, whether to order the columns and rows to display the missing
-#'   values next to each other, defautl to FALSE.
-#'
+#' @param output_dir the directory to write the output file to, default to the current directory.
+#' @param numeric_cutoff the minimum number of distinct values required for a numeric vector not to
+#'   be coerced to a fator. -1 is the default, meaning no minimum required.
+#' @param na_threshold numeric vector defining the range of values for the percentage of missing
+#'   values to be colored green, orange and red. Default to green before 40 percent, orange between
+#'   40 and 80 and red over 80 percent. If NULL then no colors are applied
+#' @param max_length the maximum number of rows in the frequency tables. Default to Inf, all the values.
+#' @param nchar maximum number of characters displayed in the plots as level values for
+#'   categorical vectors.
+#' @param order logical, whether to order the columns and rows to display the missing values next to
+#'   each other, defautl to FALSE.
+#' @param verbose logical, should information messages be printed in the console? default to TRUE.
+#' 
 #' @examples
 #' \donttest{
 #' data(iris)
-#' audit_report_html_global(iris, "iris.html")
+#' 
+#' # html report with only global information
+#' audit_report(iris, "iris.html", global_only = TRUE)
+#' 
+#' # excel report with only global information
+#' audit_report(iris, "iris.xlsx", global_only = TRUE)
+#' 
+#' # complete html report
+#' audit_report(iris, "iris.html")
+#' 
+#' # complete excel report
+#' audit_report(iris, "iris.xlsx")
 #' }
 #'
 #' @import data.table
 #' @import knitr
 #' @importFrom magrittr "%>%"
 #' @importFrom formattable color_bar
-#' @importFrom kableExtra kable_styling cell_spec
+#' @importFrom kableExtra kable_styling cell_spec column_spec scroll_box
 #' @importFrom rmarkdown render
-#' 
+#' @import openxlsx
+#'
 #' @export
-audit_report_html_global <- function(data,
-                                     output_dir = NULL,
-                                     output_file = NULL,
-                                     na_type = NULL,
-                                     numeric_cutoff = -1,
-                                     na_threshold = c(40, 80),
-                                     order = FALSE) {
+audit_report <- function(data,
+                         output_file,
+                         quality_res = NULL,
+                         global_only = FALSE,
+                         na_type = NULL,
+                         output_dir = NULL,
+                         numeric_cutoff = -1,
+                         na_threshold = c(40, 80),
+                         max_length = Inf,
+                         nchar = 20,
+                         order = FALSE,
+                         verbose = TRUE) {
+  if (endsWith(output_file, ".html")) {
+    audit_report_html(data = data, output_dir = output_dir, output_file = output_file, na_type = na_type, 
+                      numeric_cutoff = numeric_cutoff, na_threshold = na_threshold, 
+                      max_length = max_length, nchar = nchar, order = order, global_only = global_only)
+  } else if (endsWith(output_file, ".xlsx")) {
+    audit_report_excel(data = data, quality_res = quality_res, output_file = output_file, numeric_cutoff = numeric_cutoff, na_type = na_type, 
+                       max_length = max_length, global_only = global_only, na_threshold = na_threshold, verbose = verbose)
+  } else {
+    message("The 'output_file' provided did not end with .xlsx or .html")
+  }
+}
+
+
+
+#'
+#' This function creates the data quality html file with global data quality and optionnaly the
+#' univaraite exploratory analysis.
+#'
+#' @param data the dataset to analyse
+#' @param output_dir the directory to write the output file to, default to the current directory.
+#' @param output_file name of the output file. If NULL, the default then it is 'quality_report'.
+#' @param na_type a character vector of strings that will be interpreted as NA
+#' @param numeric_cutoff the minimum number of distinct values required for a numeric vector not to
+#'   be coerced to a fator. -1 is the default, meaning no minimum required.
+#' @param na_threshold numeric vector defining the range of values for the percentage of missing
+#'   values to be colored green, orange and red. Default to green before 40 percent, orange between
+#'   40 and 80 and red over 80 percent. If NULL then no colors are applied
+#' @param max_length the maximum number of rows in the frequency tables. Default to 15.
+#' @param nchar maximum number of characters displayed in the plots as level values for
+#'   categorical vectors.
+#' @param order logical, whether to order the columns and rows to display the missing values next to
+#'   each other, defautl to FALSE.
+#' @param global_only logical, should only the global data quality be rendered?
+#'
+#' @examples
+#' \donttest{
+#' data(iris)
+#' audit_report_html(iris, "iris.html", global_only = TRUE)
+#' audit_report_html(iris, "iris.html")
+#' }
+#'
+#' @import data.table
+#' @import knitr
+#' @importFrom magrittr "%>%"
+#' @importFrom formattable color_bar
+#' @importFrom kableExtra kable_styling cell_spec column_spec scroll_box
+#' @importFrom rmarkdown render
+#'
+#' @export
+audit_report_html <- function(data,
+                              output_dir = NULL,
+                              output_file = NULL,
+                              na_type = NULL,
+                              numeric_cutoff = -1,
+                              na_threshold = c(40, 80),
+                              max_length = Inf,
+                              nchar = 20,
+                              order = FALSE,
+                              global_only = FALSE) {
   # arguments check
   if (!is.data.frame(data) & !is.data.table(data)) {
     stop("'data' must either be a data.frame or a data.table.")
@@ -50,6 +130,11 @@ audit_report_html_global <- function(data,
       stop("'na_threshold' must be numeric of length 2.")
     } else if (na_threshold[1] >= na_threshold[2]) {
       stop("The first element of 'na_threshold' should be lower than the second one.")
+    }
+  }
+  if (!is.null(output_file)) {
+    if (!(is.character(output_file) & length(output_file) == 1 & endsWith(output_file, ".html"))) {
+      stop("'output_file' should have an html extension.")
     }
   }
   
@@ -68,72 +153,8 @@ audit_report_html_global <- function(data,
     output_file = output_file,
     output_dir = output_dir,
     envir = new.env(),
-    params = list(data = data, na_type = na_type, numeric_cutoff = numeric_cutoff, na_threshold = na_threshold, order = order)
-  )
-}
-
-
-#'
-#'
-#' This function renders the univariate exploratory analysis rmardown document with
-#' specific parameters.
-#'
-#' @param data the dataset to analyse
-#' @param numeric_cutoff the minimum number of distinct values required for a numeric
-#'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
-#' @param max_length the maximum number of rows in the frequency tables. Default to 15.
-#' @param nchar maximum number of characters displayed in the plots as level values for
-#'   categorical vectors. See details.
-#' @param output_dir the directory to write the output file to, default to the current
-#'   directory.
-#' @param output_file name of the output file. If NULL, the default then it is 'desc_report'.
-#'
-#' @examples
-#' \donttest{
-#' data(iris)
-#' audit_report_html(iris, "iris.html")
-#' }
-#'
-#' @import data.table
-#' @import knitr
-#' @importFrom magrittr "%>%"
-#' @importFrom kableExtra kable_styling column_spec
-#' @importFrom rmarkdown render
-#' @importFrom stringi stri_replace_first_regex
-#' 
-#' @export
-audit_report_html <- function(data,
-                              numeric_cutoff = -1,
-                              max_length = 15,
-                              nchar = 20,
-                              output_dir = NULL,
-                              output_file = NULL) {
-  # arguments check
-  if (!is.data.frame(data) & !is.data.table(data)) {
-    stop("'data' must either be a data.frame or a data.table.")
-  }
-  if (!is.data.table(data)) {
-    data <- as.data.table(data)
-  }
-  
-  if (is.null(output_file) & is.null(output_dir)) {
-    output_file <- "audit_report.html"
-    output_dir <- "."
-  } else if (is.null(output_dir)) {
-    output_dir <- stringi::stri_replace_first_regex(output_file, "(?<=/).[^/]*$", "") %>% 
-      stringi::stri_replace_first_regex("/$", "")
-  } else if (is.null(output_file)) {
-    output_file <- "audit_report.html"
-  }
-  
-  names(data) <- make.names(names(data), unique = TRUE)
-  
-  rmarkdown::render(
-    input = system.file("rmarkdown/templates/audit_report.Rmd", package = "auditdata"),
-    output_dir = output_dir,
-    output_file = output_file,
-    envir = new.env(),
-    params = list(data = data, numeric_cutoff = numeric_cutoff, max_length = max_length, nchar = nchar)
+    params = list(data = data, na_type = na_type, numeric_cutoff = numeric_cutoff, na_threshold = na_threshold, 
+                  max_length = max_length, nchar = nchar, order = order, global_only = global_only)
   )
 }
 
@@ -148,7 +169,7 @@ audit_report_html <- function(data,
 #'
 #' @param data a data.frame
 #' @param quality_res an object with class qualityResult obtained with \code{data_quality()}
-#' @param file output file name
+#' @param output_file output file name
 #' @param numeric_cutoff the minimum number of distinct values required for a numeric
 #'   vector not to be coerced to a fator. -1 is the default, meaning no minimum required.
 #' @param na_type charcater vector with valus that should be considered NA. Default to
@@ -164,15 +185,15 @@ audit_report_html <- function(data,
 #'   
 #' @examples
 #' data(mtcars)
-#' audit_report_excel(mtcars, file = "mtcars.xlsx")
+#' audit_report_excel(mtcars, output_file = "mtcars.xlsx")
 #' 
 #' data(iris)
-#' audit_report_excel(mtcars, file = "iris.xlsx")
+#' audit_report_excel(mtcars, output_file = "iris.xlsx")
 #'
 #' @import openxlsx
 #'
 #' @export
-audit_report_excel <- function(data = NULL, quality_res = NULL, file = NULL, numeric_cutoff = -1, na_type = NULL, 
+audit_report_excel <- function(data = NULL, quality_res = NULL, output_file = NULL, numeric_cutoff = -1, na_type = NULL, 
                                max_length = Inf, global_only = FALSE, na_threshold = c(40, 80), verbose = TRUE) {
   if (is.null(data) & is.null(quality_res)) {
     stop("One of data and quality_res should be provided.")
@@ -189,15 +210,11 @@ audit_report_excel <- function(data = NULL, quality_res = NULL, file = NULL, num
   if (!is.null(quality_res) & class(quality_res)[2] == "qualityResult" & length(quality_res) == 1 & !global_only) {
     warning("The report is build with only the global view as quality_res only have one element. Make sure qualitty_res is obtained with global_only set to FALSE.")
   }
-  if (is.null(file)) {
-    file <- "quality_results.xlsx"
+  if (is.null(output_file)) {
+    output_file <- "quality_results.xlsx"
   } else {
-    if (!(is.character(file) & length(file) == 1)) {
-      stop("file must be a character of length one.")
-    }
-    if (!endsWith(file, ".xlsx")) {
-      file <- paste0(file, ".xlsx")
-      warning("file does end with .xlsx, it was added.")
+    if (!(is.character(output_file) & length(output_file) == 1 & endsWith(output_file, ".xlsx"))) {
+      stop("'output_file' should have an xlsx extension.")
     }
   }
   if (!is.null(na_threshold)) {
@@ -535,6 +552,6 @@ audit_report_excel <- function(data = NULL, quality_res = NULL, file = NULL, num
       if (verbose) cat("Date summary created\n")
     }
   }
-  saveWorkbook(wb = workbook, file = file, overwrite = TRUE)
+  saveWorkbook(wb = workbook, file = output_file, overwrite = TRUE)
   invisible(quality_res)
 }

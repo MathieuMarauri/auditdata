@@ -24,14 +24,16 @@ if (is_date(x)) {
   colnames(description$percentiles) <- NULL
   print(kable(x = description$percentiles, format = 'html', escape = FALSE, row.names = TRUE, digits = 2, format.args = list(decimal.mark = ".", big.mark = " ")) %>%
     kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center") %>%
-  column_spec(1, bold = TRUE, border_right = TRUE))
+  column_spec(1, bold = TRUE, border_right = TRUE) %>% 
+    scroll_box(extra_css = "border: none; padding: 0px", width = "100%", height = "auto"))
 } else if (is_categorical(x, numeric_cutoff = numeric_cutoff)) {
   # summary_stat
   print(kable(x = description$summary_stat, format = 'html', escape = FALSE, digits = 2, format.args = list(decimal.mark = ".", big.mark = " ")) %>%
     kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center"))
   # freq_table
   print(kable(x = description$freq_table, format = 'html', escape = FALSE, digits = 2, format.args = list(decimal.mark = ".", big.mark = " ")) %>%
-    kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center"))
+    kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center") %>% 
+    scroll_box(extra_css = "border: none; padding: 0px", width = "100%", height = "500px"))
 }
 ```
 

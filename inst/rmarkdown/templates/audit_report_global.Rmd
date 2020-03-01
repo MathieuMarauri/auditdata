@@ -5,6 +5,9 @@ params:
   numeric_cutoff: !r -1
   na_threshold: !r NULL
   order: !r FALSE
+  max_length: !r 15
+  nchar: !r 20
+  global_only: !r FALSE
 title: "Data quality"
 output:
   html_document:
@@ -30,32 +33,26 @@ quality_output <- data_quality$table
 ```
 
 
-## Global figures
+# Global figures
 
 The table has `r quality_info$n_cols` columns and `r quality_info$n_rows` rows (`r quality_info$n_unique` are unique). There are `r round(quality_info$n_missing / (quality_info$n_cols * quality_info$n_rows) * 100, digits = 0)`% missing values in the dataset.
 
 ```{r quality_table_formating}
 if (!is.null(params$na_threshold)) {
-  quality_output$`Missing values` <- ifelse(
-    quality_output$`Percentage of missing values` <= params$na_threshold[1],
-    cell_spec(quality_output$`Missing values`, format = "html", color = "green"),
-    ifelse(
-      quality_output$`Percentage of missing values` > params$na_threshold[2],
-      cell_spec(quality_output$`Missing values`, format = "html", color = "red"),
-      cell_spec(quality_output$`Missing values`, format = "html", color = "orange")
-    )
-  )
   quality_output$percent <- quality_output$`Percentage of missing values`
-  quality_output$`Percentage of missing values` <- ifelse(
-    quality_output$`Percentage of missing values` <= params$na_threshold[1],
-    cell_spec(quality_output$`Percentage of missing values`, format = "html", color = "green"),
-    ifelse(
-      quality_output$`Percentage of missing values` > params$na_threshold[2],
-      cell_spec(quality_output$`Percentage of missing values`, format = "html", color = "red"),
-      cell_spec(quality_output$`Percentage of missing values`, format = "html", color = "orange")
-    )
-  )
-  quality_output$`Percentage of missing values` <- color_bar("lightblue", fun = function(x) x / 100)(quality_output$percent)
+  quality_output$`Percentage of missing values` <- color_bar(
+    color = ifelse(
+      quality_output$percent <= params$na_threshold[1],
+      "lightgreen",
+       ifelse(
+         quality_output$percent > params$na_threshold[2],
+         "indianred",
+         "orange"
+         )
+      ),
+      fun = function(x) x / max(x)
+    )(quality_output$percent)
+  quality_output$percent <- NULL
 }
 ```
 
@@ -64,8 +61,33 @@ kable(x = quality_output, format = "html", escape = FALSE, digits = 2, format.ar
   kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = F, position = "center")
 ```
 
-## Missing values
+# Missing values
+
+<script>
+$(function(){
+  $('div.ordered').hide();// hide it initially
+  $('button').on('click', function(){
+     $('div.unordered, div.ordered').toggle();
+  });
+});
+</script>
+<button id = "but-change">Order/Unorder</button>
+
+<div class="unordered">
 
 ```{r na_plot, fig.align = 'center', dpi = 300, out.width = '100%', fig.height = 6}
-audit_missing(data, na_type = params$na_type, order = params$order)
+audit_missing(data, na_type = params$na_type, order = FALSE)
+```
+
+</div>
+
+<div class="ordered">
+
+```{r na_plot_order, fig.align = 'center', dpi = 300, out.width = '100%', fig.height = 6}
+audit_missing(data, na_type = params$na_type, order = TRUE)
+```
+
+</div>
+
+```{r univ_explo, child='audit_report.Rmd', eval = !global_only}
 ```
