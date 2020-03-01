@@ -7,12 +7,13 @@ test_that(
     res <- audit_vector_categorical(x, plot = FALSE)
     expected_res_summary <- data.frame(
       Indicator = c("Length", "Number of NAs", "Number of unique values", "Number of values with duplicates"),
-      Value = c(408, 5, 26, 26)
+      Value = c(408L, 5L, 26L, 26L),
+      stringsAsFactors = FALSE
     )
     expect_equal(res$summary_stat, expected_res_summary)
     
     expected_res_freq <- data.table(
-      value = rev(letters)[1:15],
+      value = factor(rev(letters)[1:15]),
       freq = (28:3)[1:15],
       percent = round(28:3 / 403 * 100, digits = 0)[1:15],
       cum_freq = cumsum(28:3)[1:15],
