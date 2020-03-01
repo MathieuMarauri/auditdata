@@ -14,7 +14,7 @@
 #' @param na_threshold numeric vector defining the range of values for the percentage of missing
 #'   values to be colored green, orange and red. Default to green before 40 percent, orange between
 #'   40 and 80 and red over 80 percent. If NULL then no colors are applied
-#' @param max_length the maximum number of rows in the frequency tables. Default to 15.
+#' @param max_length the maximum number of rows in the frequency tables. Default to Inf, all the values.
 #' @param nchar maximum number of characters displayed in the plots as level values for
 #'   categorical vectors.
 #' @param order logical, whether to order the columns and rows to display the missing values next to
