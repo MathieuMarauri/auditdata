@@ -64,7 +64,7 @@ plot_freq_date_group <- function(x, group, title = TRUE) {
   if (title) {
     plot <- plot + labs(
       title = "Total number of records by group. Group without data are plotted in red.",
-      subtitle = "The dashed line correspond to the expected number of records by group."
+      subtitle = paste0("The dashed line correspond to the mean number of records by ", group, ".")
     )
   }
   return(plot)
