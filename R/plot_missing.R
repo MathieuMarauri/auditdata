@@ -5,7 +5,7 @@
 #'
 #' @param data a data.frame
 #' @param order logical, whether to order the columns and rows to display the missing
-#'   values next to each other, defautl to FALSE.
+#'   values next to each other, default to FALSE.
 #' @param na_type a character vector of strings that will be interpreted as NA
 #'
 #' @details If the order argument is set to TRUE then the order of the rows is modified
